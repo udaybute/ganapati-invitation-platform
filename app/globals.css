@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+@keyframes slow-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.animate-slow-spin {
+  animation: slow-spin 20s linear infinite;
+}
+
+@keyframes garland-swing {
+  0% {
+    transform: rotate(-5deg);
+  }
+
+  50% {
+    transform: rotate(5deg);
+  }
+
+  100% {
+    transform: rotate(-5deg);
+  }
+}
+
+.animate-garland-swing {
+  animation: garland-swing 4s ease-in-out infinite;
+}
+
+@keyframes flowerFall {
+  0% {
+    transform: translate3d(0, -200px, 0)
+      rotate(0deg);
+    opacity: 1;
+  }
+
+  25% {
+    transform: translate3d(
+        40px,
+        100px,
+        0
+      )
+      rotate(180deg);
+  }
+
+  50% {
+    transform: translate3d(
+        -40px,
+        250px,
+        0
+      )
+      rotate(360deg);
+  }
+
+  75% {
+    transform: translate3d(
+        30px,
+        400px,
+        0
+      )
+      rotate(540deg);
+  }
+
+  100% {
+    transform: translate3d(
+        -20px,
+        550px,
+        0
+      )
+      rotate(720deg);
+
+    opacity: 0;
+  }
+}
+
+.animate-flower {
+  animation: flowerFall linear forwards;
+}
+
+@keyframes particle {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-particle {
+  animation: particle 2s infinite;
+}
+
+
+.animate-ganesh-glow {
+  animation: ganeshGlow 2s infinite;
+}
+
+@keyframes topFlower {
+  from {
+    transform: translateY(-300px) rotate(0deg) scale(0.5);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(600px) rotate(720deg) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes leftFlower {
+  0% {
+    transform:
+      translate(-180px, 120px)
+      rotate(0deg)
+      scale(0.6);
+
+    opacity: 1;
+  }
+
+  25% {
+    transform:
+      translate(-80px, 40px)
+      rotate(180deg)
+      scale(0.8);
+  }
+
+  50% {
+    transform:
+      translate(20px, -40px)
+      rotate(360deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(110px, 120px)
+      rotate(720deg)
+      scale(1.2);
+
+    opacity: 0;
+  }
+}
+
+@keyframes rightFlower {
+  0% {
+    transform:
+      translate(180px, 120px)
+      rotate(0deg)
+      scale(0.6);
+
+    opacity: 1;
+  }
+
+  25% {
+    transform:
+      translate(80px, 40px)
+      rotate(-180deg)
+      scale(0.8);
+  }
+
+  50% {
+    transform:
+      translate(-20px, -40px)
+      rotate(-360deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(-110px, 120px)
+      rotate(-720deg)
+      scale(1.2);
+
+    opacity: 0;
+  }
+}
+
+.animate-top-flower {
+  animation: topFlower 4s linear forwards;
+}
+
+.animate-left-flower {
+  animation: leftFlower 4s linear forwards;
+}
+
+.animate-right-flower {
+  animation: rightFlower 4s linear forwards;
+}
+
+
+@keyframes ganeshGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 80px rgba(255, 215, 0, 1);
+  }
+
+  100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  }
+}
+
+.animate-ganesh-glow {
+  animation: ganeshGlow 2s infinite;
+}
+
+@keyframes floatingParticles {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.gallery-card {
+  animation: floatingParticles 5s ease-in-out infinite;
+}
+
+@keyframes diyaFlicker {
+  0% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.3);
+  }
+
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.animate-diya {
+  animation: diyaFlicker 2s infinite;
+}
+
+@keyframes floatingParticles {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+
+@keyframes random-sparkle {
+  0% {
+    transform: translate(0, 0) scale(0.4);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  40% {
+    transform: translate(-20px, -40px) scale(1);
+  }
+
+  60% {
+    transform: translate(25px, -70px) scale(0.8);
+  }
+
+  80% {
+    transform: translate(-15px, -100px) scale(1.1);
+  }
+
+  100% {
+    transform: translate(10px, -140px) scale(0.2);
+    opacity: 0;
+  }
+}
+
+.animate-random-sparkle {
+  animation-name: random-sparkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
