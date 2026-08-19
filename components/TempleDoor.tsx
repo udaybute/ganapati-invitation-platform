@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useMusic } from "@/components/contexts/MusicContext";
 
 export default function TempleDoor() {
   const [open, setOpen] = useState(false);

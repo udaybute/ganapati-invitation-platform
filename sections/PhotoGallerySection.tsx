@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useSwipeable } from "react-swipeable";
 import gsap from "gsap";
-import PopupPortal from "../ui/PopupPortal";
+import PopupPortal from "@/components/ui/PopupPortal";
 
 const galleryImages = [
   "/images/gallery/gallery-1.jpg",
