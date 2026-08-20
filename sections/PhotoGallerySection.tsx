@@ -13,14 +13,14 @@ import gsap from "gsap";
 import PopupPortal from "@/components/ui/PopupPortal";
 
 const galleryImages = [
-  "/images/gallery/gallery-1.jpg",
-  "/images/gallery/gallery-2.jpg",
-  "/images/gallery/gallery-3.jpg",
-  "/images/gallery/gallery-4.jpg",
-  "/images/gallery/gallery-5.jpg",
-  "/images/gallery/gallery-6.jpg",
-  "/images/gallery/gallery-7.jpg",
-  "/images/gallery/gallery-8.jpg",
+  "/images/gallery/gallery-1.webp",
+  "/images/gallery/gallery-2.webp",
+  "/images/gallery/gallery-3.webp",
+  "/images/gallery/gallery-4.webp",
+  "/images/gallery/gallery-5.webp",
+  "/images/gallery/gallery-6.webp",
+  "/images/gallery/gallery-7.webp",
+  "/images/gallery/gallery-8.webp",
 ];
 
 export default function PhotoGallerySection() {

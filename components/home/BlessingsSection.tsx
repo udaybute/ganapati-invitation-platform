@@ -206,7 +206,7 @@ const sparkles: Sparkle[] = Array.from(
               }}
             >
               <Image
-                src="/images/decorations/plumeria.png"
+                src="/images/decorations/Plumeria.webp"
                 alt=""
                 width={flower.size}
                 height={flower.size}
