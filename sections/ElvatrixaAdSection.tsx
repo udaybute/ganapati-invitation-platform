@@ -214,197 +214,320 @@ export default function ElvatrixaAdSection() {
           </p>
         </div>
 
-        {/* ===================================================
-            PRICING
-        ==================================================== */}
+ {/* ===================================================
+    PRICING SECTION
+=================================================== */}
 
+<div
+  className="
+    mx-auto
+    mt-10
+    grid
+    w-full
+    max-w-4xl
+    grid-cols-1
+    gap-5
+    sm:gap-6
+    md:grid-cols-2
+  "
+>
+  {/* =================================================
+      BASIC PLAN
+  ================================================== */}
+
+  <div
+    className="
+  pricing-custom-card
+  group
+  relative
+  overflow-hidden
+  rounded-[26px]
+  border
+  border-cyan-400/50
+  bg-gradient-to-br
+  from-[#06151c]/95
+  via-[#080b17]/95
+  to-[#080914]/95
+  p-5
+  shadow-[0_15px_45px_rgba(0,0,0,0.35)]
+  backdrop-blur-xl
+  transition-all
+  duration-500
+  hover:-translate-y-2
+  hover:scale-[1.02]
+  sm:p-6
+  md:p-7
+"
+  >
+    {/* Glow */}
+
+    <div
+      className="
+      pricing-shimmer
+        pointer-events-none
+        absolute
+        -right-16
+        -top-16
+        h-36
+        w-36
+        rounded-full
+        bg-fuchsia-600/20
+        blur-[60px]
+      "
+    />
+
+    {/* Content */}
+
+    <div className="relative">
+      {/* Badge */}
+
+      <div className="flex justify-center">
+        <div
+  className="
+    pricing-badge
+    rounded-full
+    bg-gradient-to-r
+    from-fuchsia-600
+    to-purple-600
+    px-5
+    py-2
+    text-xs
+    font-bold
+    text-white
+    sm:text-sm
+  "
+>
+  BASIC आमंत्रण
+</div>
+      </div>
+
+      {/* Price */}
+
+      <div className="mt-5 text-center">
         <div
           className="
-            mx-auto
-            mt-10
-            grid
-            max-w-3xl
-            grid-cols-1
-            gap-5
-            sm:grid-cols-2
+            flex
+            items-baseline
+            justify-center
+            gap-2
           "
         >
-          {/* BASIC */}
+         <span
+  className="
+    pricing-price
+    inline-block
+    text-5xl
+    font-black
+    tracking-tight
+    text-white
+    sm:text-6xl
+  "
+>
+  ₹499
+</span>
 
-          <div
+          <span
             className="
-              relative
-              overflow-hidden
-              rounded-[28px]
-              border
-              border-fuchsia-400/40
-              bg-black/35
-              p-6
-              shadow-[0_20px_60px_rgba(0,0,0,0.35)]
-              backdrop-blur-xl
+              text-xs
+              font-medium
+              text-white/50
+              sm:text-sm
             "
           >
-            <div
-              className="
-                absolute
-                right-[-40px]
-                top-[-40px]
-                h-28
-                w-28
-                rounded-full
-                bg-fuchsia-500/20
-                blur-3xl
-              "
-            />
-
-            <div className="relative">
-              <div
-                className="
-                  inline-flex
-                  rounded-full
-                  bg-gradient-to-r
-                  from-fuchsia-600
-                  to-purple-600
-                  px-5
-                  py-2
-                  text-sm
-                  font-bold
-                  text-white
-                "
-              >
-                BASIC आमंत्रण
-              </div>
-
-              <div className="mt-5">
-                <span
-                  className="
-                    text-5xl
-                    font-black
-                    text-white
-                  "
-                >
-                  ₹499
-                </span>
-
-                <span
-                  className="
-                    ml-2
-                    text-sm
-                    text-white/60
-                  "
-                >
-                  फक्त
-                </span>
-              </div>
-
-              <div
-                className="
-                  my-5
-                  h-px
-                  bg-gradient-to-r
-                  from-transparent
-                  via-fuchsia-400/50
-                  to-transparent
-                "
-              />
-
-              <div className="space-y-3">
-                <Feature text="सुंदर प्रीमियम डिझाईन" />
-                <Feature text="मोबाइल फ्रेंडली" />
-                <Feature text="मंडळाची मूलभूत माहिती" />
-                <Feature text="जलद डिलिव्हरी" />
-              </div>
-            </div>
-          </div>
-
-          {/* CUSTOM */}
-
-          <div
-            className="
-              relative
-              overflow-hidden
-              rounded-[28px]
-              border
-              border-cyan-400/50
-              bg-black/35
-              p-6
-              shadow-[0_20px_60px_rgba(0,0,0,0.35)]
-              backdrop-blur-xl
-            "
-          >
-            <div
-              className="
-                absolute
-                bottom-[-40px]
-                right-[-40px]
-                h-28
-                w-28
-                rounded-full
-                bg-cyan-500/20
-                blur-3xl
-              "
-            />
-
-            <div className="relative">
-              <div
-                className="
-                  inline-flex
-                  rounded-full
-                  bg-gradient-to-r
-                  from-blue-600
-                  to-cyan-500
-                  px-5
-                  py-2
-                  text-sm
-                  font-bold
-                  text-white
-                "
-              >
-                CUSTOM आमंत्रण
-              </div>
-
-              <div className="mt-5">
-                <span
-                  className="
-                    text-5xl
-                    font-black
-                    text-white
-                  "
-                >
-                  ₹999
-                </span>
-
-                <span
-                  className="
-                    ml-2
-                    text-sm
-                    text-white/60
-                  "
-                >
-                  फक्त
-                </span>
-              </div>
-
-              <div
-                className="
-                  my-5
-                  h-px
-                  bg-gradient-to-r
-                  from-transparent
-                  via-cyan-400/50
-                  to-transparent
-                "
-              />
-
-              <div className="space-y-3">
-                <Feature text="पूर्ण Custom Design" />
-                <Feature text="तुमच्या पसंतीनुसार Theme" />
-                <Feature text="Animation Effects" />
-                <Feature text="विशेष Features" />
-              </div>
-            </div>
-          </div>
+            फक्त
+          </span>
         </div>
+      </div>
+
+      {/* Divider */}
+
+      <div
+        className="
+          my-5
+          h-px
+          bg-gradient-to-r
+          from-transparent
+          via-fuchsia-400/30
+          to-transparent
+        "
+      />
+
+      {/* Features */}
+
+      <div className="space-y-3.5">
+        <Feature text="सुंदर प्रीमियम डिझाईन" />
+        <Feature text="मोबाइल फ्रेंडली" />
+        <Feature text="मंडळाची मूलभूत माहिती" />
+        <Feature text="जलद डिलिव्हरी" />
+      </div>
+
+      {/* Bottom Label */}
+
+      <div
+        className="
+          mt-6
+          rounded-xl
+          bg-fuchsia-500/5
+          px-3
+          py-2
+          text-center
+          text-xs
+          text-fuchsia-200/70
+        "
+      >
+        सुरुवातीसाठी योग्य
+      </div>
+    </div>
+  </div>
+
+  {/* =================================================
+      CUSTOM PLAN
+  ================================================== */}
+
+  <div
+    className="
+    pricing-custom-card
+      group
+      relative
+      overflow-hidden
+      rounded-[26px]
+      border
+      border-cyan-400/50
+      bg-gradient-to-br
+      from-[#06151c]/95
+      via-[#080b17]/95
+      to-[#080914]/95
+      p-5
+      shadow-[0_15px_45px_rgba(0,0,0,0.35)]
+      backdrop-blur-xl
+      transition-all
+      duration-500
+      hover:-translate-y-1
+      hover:border-cyan-400/80
+      hover:shadow-[0_20px_55px_rgba(34,211,238,0.15)]
+      sm:p-6
+      md:p-7
+    "
+  >
+    {/* Glow */}
+
+    <div
+      className="
+      pricing-shimmer
+        pointer-events-none
+        absolute
+        -bottom-16
+        -right-16
+        h-36
+        w-36
+        rounded-full
+        bg-cyan-500/20
+        blur-[60px]
+      "
+    />
+
+    <div className="relative">
+      {/* Badge */}
+
+      <div className="flex justify-center">
+  <div
+  className="
+    pricing-badge
+    rounded-full
+    bg-gradient-to-r
+    from-blue-600
+    to-cyan-500
+    px-5
+    py-2
+    text-xs
+    font-bold
+    text-white
+    sm:text-sm
+  "
+>
+  CUSTOM आमंत्रण
+</div>
+      </div>
+
+      {/* Price */}
+
+      <div className="mt-5 text-center">
+        <div
+          className="
+            flex
+            items-baseline
+            justify-center
+            gap-2
+          "
+        >
+         <span
+  className="
+    pricing-price
+    inline-block
+    text-5xl
+    font-black
+    tracking-tight
+    text-white
+    sm:text-6xl
+  "
+>
+  ₹999
+</span>
+
+          <span
+            className="
+              text-xs
+              font-medium
+              text-white/50
+              sm:text-sm
+            "
+          >
+            फक्त
+          </span>
+        </div>
+      </div>
+
+      {/* Divider */}
+
+      <div
+        className="
+          my-5
+          h-px
+          bg-gradient-to-r
+          from-transparent
+          via-cyan-400/30
+          to-transparent
+        "
+      />
+
+      {/* Features */}
+
+      <div className="space-y-3.5">
+        <Feature text="पूर्ण Custom Design" />
+        <Feature text="तुमच्या पसंतीनुसार Theme" />
+        <Feature text="Animation Effects" />
+        <Feature text="विशेष Features" />
+      </div>
+
+      {/* Bottom Label */}
+
+      <div
+        className="
+          mt-6
+          rounded-xl
+          bg-cyan-500/5
+          px-3
+          py-2
+          text-center
+          text-xs
+          text-cyan-200/70
+        "
+      >
+        पूर्णपणे तुमच्या शैलीनुसार
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* ===================================================
             WEBSITE OFFER
@@ -803,9 +926,17 @@ function Feature({
   text: string;
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <div
+      className="
+        flex
+        min-h-[28px]
+        items-center
+        gap-3
+      "
+    >
       <CheckCircle2
-        size={18}
+        size={17}
+        strokeWidth={2}
         className="
           shrink-0
           text-fuchsia-400
@@ -814,8 +945,10 @@ function Feature({
 
       <span
         className="
-          text-sm
-          text-white/80
+          text-[13px]
+          leading-5
+          text-white/75
+          sm:text-sm
         "
       >
         {text}
