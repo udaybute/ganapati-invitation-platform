@@ -172,7 +172,7 @@ export default function InvitationSection() {
               ref={titleRef}
               className="my-6 text-center text-4xl font-extrabold text-amber-900 sm:text-5xl"
             >
-              देशपांडे परिवार
+              श्री गणेश युवा शक्ती मंडळ परिवार
             </h2>
 
             <div className="mx-auto mb-6 h-[2px] w-20 bg-amber-300" />

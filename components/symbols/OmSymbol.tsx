@@ -12,15 +12,15 @@ export default function OmSymbol() {
     gsap.from(omRef.current, {
       opacity: 0,
       scale: 0,
-      y: -50,
-      duration: 1.5,
+      y: -20,
+      duration: 4,
       delay: 1,
       ease: "elastic.out(1, 0.5)",
     });
 
     gsap.to(omRef.current, {
-      y: -10,
-      duration: 3,
+      y: -8,
+      duration: 6,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
@@ -38,7 +38,7 @@ export default function OmSymbol() {
     -translate-x-1/2
   "
 >
-      <div className="relative h-15 w-15 sm:h-32 sm:w-32 md:h-40 md:w-40">
+      <div className="relative mt-0 h-12 w-12 sm:h-28 sm:w-28 md:h-40 md:w-40">
         <Image
           src="/images/symbols/om.png"
           alt="Om"

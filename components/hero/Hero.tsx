@@ -140,9 +140,9 @@ export default function Hero() {
 
           <h1
             ref={titleRef}
-            className="text-3xl font-extrabold leading-tight text-amber-900 sm:text-4xl md:text-5xl"
+            className="text-2xl font-extrabold leading-tight text-amber-900 sm:text-4xl md:text-5xl"
           >
-            बाप्पाचे आगमन
+            श्री गणेश युवा शक्ती मंडळ
           </h1>
 
           <h2
