@@ -113,7 +113,7 @@ export default function FooterSection() {
             {/* Phone */}
 
             <a
-              href="tel:+919876543210"
+              href="tel:+918668296156"
               className="group text-center"
             >
               <div

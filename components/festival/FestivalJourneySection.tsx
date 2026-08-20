@@ -182,7 +182,7 @@ useGSAP(
       {/* Background */}
 
       <Image
-        src="/images/backgrounds/festival-background.png"
+        src="/images/backgrounds/festival-background.webp"
         alt=""
         fill
         sizes="100vw"
