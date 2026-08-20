@@ -105,7 +105,7 @@ export default function Hero() {
       {/* Desktop background */}
 
       <Image
-        src="/images/backgrounds/hero-background-desktop.png"
+        src="/images/backgrounds/hero-background-desktop.webp"
         alt=""
         fill
         priority
@@ -116,7 +116,7 @@ export default function Hero() {
       {/* Mobile background */}
 
       <Image
-        src="/images/backgrounds/hero-background-mobile.png"
+        src="/images/backgrounds/hero-background-mobile.webp"
         alt=""
         fill
         priority
