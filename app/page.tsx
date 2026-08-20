@@ -9,6 +9,7 @@ import PhotoGallerySection from "@/sections/PhotoGallerySection";
 import FooterSection from "@/sections/FooterSection";
 import TempleDoor from "@/components/TempleDoor";
 import OmSymbol from "@/components/symbols/OmSymbol";
+import ElvatrixaAdSection from "@/sections/ElvatrixaAdSection";
 
 export default function Home() {
   return (
@@ -39,6 +40,8 @@ export default function Home() {
 <PhotoGallerySection />
 
 <FooterSection/>
+
+<ElvatrixaAdSection/>
 
     </>
 

@@ -140,7 +140,7 @@ export default function FooterSection() {
               </div>
 
               <p className="mt-5 text-xl text-amber-100 md:text-3xl">
-                +91 98765 43210
+                +91 866 829 6156 
               </p>
             </a>
 
