@@ -305,252 +305,292 @@ export default function FamilySection() {
         {/* =====================================================
             PHOTO STACK
         ====================================================== */}
+{/* =====================================================
+    PREMIUM FAMILY CAROUSEL
+===================================================== */}
 
+<div className="relative mt-8 w-full sm:mt-10">
+
+  {/* FIXED CAROUSEL STAGE */}
+  <div
+    className="
+      relative
+      mx-auto
+      h-[430px]
+      w-full
+      overflow-hidden
+      sm:h-[515px]
+      md:h-[560px]
+    "
+  >
+
+    {familyMembers.map((member, index) => {
+      const total = familyMembers.length;
+
+      let offset = index - activeIndex;
+
+      /*
+       * Make the carousel circular.
+       *
+       * Example:
+       * active = 0
+       * previous = last item
+       * next = 1
+       */
+
+      if (offset > total / 2) {
+        offset -= total;
+      }
+
+      if (offset < -total / 2) {
+        offset += total;
+      }
+
+      /*
+       * Only show the active card
+       * and immediate neighbours.
+       */
+      const isVisible = Math.abs(offset) <= 1;
+
+      const isActive = offset === 0;
+
+      /*
+       * Position cards independently.
+       *
+       * -1 = left
+       *  0 = center
+       * +1 = right
+       */
+
+      const mobileDistance = 165;
+      const desktopDistance = 245;
+
+      return (
         <div
+          key={member.id}
           className="
-            relative
-            mt-8
+            absolute
+            left-1/2
+            top-0
             flex
-            flex-col
-            items-center
-            sm:mt-10
+            justify-center
+            will-change-transform
+            transition-all
+            duration-[800ms]
+            ease-[cubic-bezier(0.22,1,0.36,1)]
           "
+          style={{
+            zIndex: isActive ? 20 : 10,
+
+            opacity: isVisible
+              ? isActive
+                ? 1
+                : 0.58
+              : 0,
+
+            transform: `
+              translateX(
+                calc(
+                  -50% +
+                  ${
+                    offset * mobileDistance
+                  }px
+                )
+              )
+              scale(${isActive ? 1 : 0.82})
+              rotateY(${offset * -4}deg)
+            `,
+
+            pointerEvents: isActive ? "auto" : "none",
+          }}
         >
-          {/* ===================================================
-              BACK CARD - LEFT
-          ==================================================== */}
 
-          <div
-            className="
-              absolute
-              left-1/2
-              top-[42px]
-              h-[350px]
-              w-[190px]
-              -translate-x-1/2
-              rotate-[-7deg]
-              overflow-hidden
-              rounded-[24px]
-              bg-[#dfc6a0]/60
-              shadow-[0_12px_30px_rgba(30,10,0,0.25)]
-              sm:h-[430px]
-              sm:w-[275px]
-              md:h-[470px]
-              md:w-[350px]
-            "
-          />
+          {/* CARD */}
+<div
+  className="
+    relative
+    w-[300px]
+    h-[400px]
+    aspect-[4/3]
+    overflow-hidden
+    rounded-[28px]
+    bg-[#fffaf0]
+    shadow-[0_18px_45px_rgba(30,10,0,0.38)]
 
-          {/* ===================================================
-              BACK CARD - RIGHT
-          ==================================================== */}
+    sm:w-[420px]
+    md:w-[520px]
+    lg:w-[560px]
+  "
+>
+  {/* PHOTO */}
+  <div className="relative h-full w-full overflow-hidden">
+    <Image
+      src={member.image}
+      alt={member.name}
+      fill
+      priority={index === 0}
+      sizes="
+        (max-width: 640px) 300px,
+        (max-width: 768px) 420px,
+        (max-width: 1024px) 520px,
+        560px
+      "
+      className="
+        object-cover
+        object-center
+      "
+    />
 
-          <div
-            className="
-              absolute
-              left-1/2
-              top-[35px]
-              h-[350px]
-              w-[190px]
-              -translate-x-1/2
-              rotate-[7deg]
-              overflow-hidden
-              rounded-[24px]
-              bg-[#d9bd94]/55
-              shadow-[0_12px_30px_rgba(30,10,0,0.25)]
-              sm:h-[430px]
-              sm:w-[275px]
-              md:h-[470px]
-              md:w-[350px]
-            "
-          />
+    {/* subtle cinematic overlay */}
+    <div
+      className="
+        pointer-events-none
+        absolute
+        inset-0
+        bg-gradient-to-t
+        from-black/25
+        via-transparent
+        to-transparent
+      "
+    />
+  </div>
 
-          {/* ===================================================
-              MAIN PHOTO CARD
-          ==================================================== */}
+  {/* NAME */}
+  <div
+    className="
+      absolute
+      bottom-0
+      left-0
+      right-0
+      bg-gradient-to-t
+      from-black/75
+      via-black/35
+      to-transparent
+      px-5
+      pb-5
+      pt-14
+      sm:px-6
+      sm:pb-6
+    "
+  >
+    <p
+      className="
+        text-center
+        text-sm
+        font-bold
+        text-white
+        sm:text-base
+      "
+    >
+      {member.name}
+    </p>
+  </div>
+</div>
 
-          <div
-            key={`${currentMember.id}-${activeIndex}`}
-            className={`
-              family-card
-              relative
-              z-10
-              w-[190px]
-              overflow-hidden
-              rounded-[24px]
-              bg-[#fffaf0]
-              shadow-[0_18px_45px_rgba(30,10,0,0.38)]
-              sm:w-[275px]
-              md:w-[350px]
-              ${
-                isShuffling
-                  ? "family-card-shuffling"
-                  : ""
-              }
-            `}
-          >
-            {/* =================================================
-                PHOTO
-            ================================================== */}
-
-            <div
-              className="
-                relative
-                h-[350px]
-                w-full
-                overflow-hidden
-                bg-[#ead9bd]
-                sm:h-[430px]
-                md:h-[470px]
-              "
-            >
-              <Image
-                src={currentMember.image}
-                alt={currentMember.name}
-                fill
-                priority={activeIndex === 0}
-                sizes="
-                  (max-width: 640px) 190px,
-                  (max-width: 768px) 275px,
-                  350px
-                "
-                className="
-                  object-cover
-                  object-center
-                "
-              />
-            </div>
-
-            {/* =================================================
-                NAME
-            ================================================== */}
-
-            <div
-              className="
-                flex
-                h-[62px]
-                items-center
-                justify-center
-                bg-[#fff9e8]
-                px-3
-                sm:h-[76px]
-              "
-            >
-              <p
-                className="
-                  text-center
-                  text-[12px]
-                  font-bold
-                  text-[#71300d]
-                  sm:text-base
-                "
-              >
-                {currentMember.name}
-              </p>
-            </div>
-          </div>
-
-          {/* =================================================
-              ARROWS
-          ================================================== */}
-
-          <div
-            className="
-              relative
-              z-40
-              mt-5
-              flex
-              items-center
-              gap-3
-              sm:mt-6
-            "
-          >
-            {/* PREVIOUS */}
-
-            <button
-              type="button"
-              onClick={goPrevious}
-              disabled={isShuffling}
-              aria-label="Previous family member"
-              className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                bg-[#fff7dc]
-                text-[#71300d]
-                shadow-[0_5px_15px_rgba(0,0,0,0.25)]
-                transition-all
-                duration-200
-                hover:scale-110
-                hover:bg-white
-                active:scale-95
-                disabled:cursor-not-allowed
-                disabled:opacity-60
-                sm:h-10
-                sm:w-10
-              "
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m15 18-6-6 6-6" />
-              </svg>
-            </button>
-
-            {/* NEXT */}
-
-            <button
-              type="button"
-              onClick={goNext}
-              disabled={isShuffling}
-              aria-label="Next family member"
-              className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                bg-[#fff7dc]
-                text-[#71300d]
-                shadow-[0_5px_15px_rgba(0,0,0,0.25)]
-                transition-all
-                duration-200
-                hover:scale-110
-                hover:bg-white
-                active:scale-95
-                disabled:cursor-not-allowed
-                disabled:opacity-60
-                sm:h-10
-                sm:w-10
-              "
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m9 18 6-6-6-6" />
-              </svg>
-            </button>
-          </div>
         </div>
+      );
+    })}
+
+  </div>
+
+
+  {/* =====================================================
+      CONTROLS
+  ===================================================== */}
+
+  <div
+    className="
+      relative
+      z-40
+      mt-5
+      flex
+      items-center
+      justify-center
+      gap-3
+      sm:mt-6
+    "
+  >
+
+    {/* PREVIOUS */}
+    <button
+      type="button"
+      onClick={goPrevious}
+      aria-label="Previous family member"
+      className="
+        flex
+        h-9
+        w-9
+        items-center
+        justify-center
+        rounded-full
+        bg-[#fff7dc]
+        text-[#71300d]
+        shadow-[0_5px_15px_rgba(0,0,0,0.25)]
+        transition-all
+        duration-300
+        hover:scale-110
+        hover:bg-white
+        active:scale-95
+        sm:h-10
+        sm:w-10
+      "
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="m15 18-6-6 6-6" />
+      </svg>
+    </button>
+
+
+    {/* NEXT */}
+    <button
+      type="button"
+      onClick={goNext}
+      aria-label="Next family member"
+      className="
+        flex
+        h-9
+        w-9
+        items-center
+        justify-center
+        rounded-full
+        bg-[#fff7dc]
+        text-[#71300d]
+        shadow-[0_5px_15px_rgba(0,0,0,0.25)]
+        transition-all
+        duration-300
+        hover:scale-110
+        hover:bg-white
+        active:scale-95
+        sm:h-10
+        sm:w-10
+      "
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="m9 18 6-6-6-6" />
+      </svg>
+    </button>
+
+  </div>
+
+</div>
 
         {/* =====================================================
             BOTTOM MESSAGE

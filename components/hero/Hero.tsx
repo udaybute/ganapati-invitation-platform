@@ -124,7 +124,7 @@ export default function Hero() {
         className="object-cover md:hidden"
       />
 
-      <OmSymbol />
+      
 
       <TempleBell position="left" />
 
@@ -176,12 +176,7 @@ export default function Hero() {
           />
         </div>
 
-        <button
-          ref={buttonRef}
-          className="rounded-full bg-amber-700 px-8 py-3 font-medium text-white transition-transform hover:scale-105"
-        >
-          दर्शन घ्या
-        </button>
+      
 
         <button
           onClick={toggleMusic}

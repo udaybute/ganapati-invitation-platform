@@ -38,7 +38,7 @@ export default function OmSymbol() {
     -translate-x-1/2
   "
 >
-      <div className="relative mt-0 h-12 w-12 sm:h-28 sm:w-28 md:h-40 md:w-40">
+      <div className="relative mt-0 h-12 w-12 sm:h-20 sm:w-20 md:h-20 md:w-20">
         <Image
           src="/images/symbols/om.png"
           alt="Om"

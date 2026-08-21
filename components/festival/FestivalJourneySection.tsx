@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import OmSymbol from "../symbols/OmSymbol";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -269,13 +270,7 @@ useGSAP(
         md:w-52
       "
     >
-      <Image
-        src="/images/decorations/divider.png"
-        alt=""
-        fill
-        sizes="208px"
-        className="object-contain"
-      />
+    
     </div>
 
   </div>
@@ -327,6 +322,7 @@ useGSAP(
     प्रत्येक मंगल क्षणाची माहिती
   </p>
 
+ <OmSymbol />
 
   {/* Bottom decorative line */}
 
