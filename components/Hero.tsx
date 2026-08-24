@@ -37,7 +37,7 @@ export default function Hero({ mandalName, inviteLine }: HeroProps) {
               exit={{ x: "-100%" }}
               transition={{ duration: 1.3, ease: [0.76, 0, 0.24, 1] }}
             >
-              <Image src="/images/doors/left-door.webp" alt="" fill className="object-cover object-right" priority />
+              <Image src="/images/doors/left-door.png" alt="" fill className="object-cover object-right" priority />
             </motion.div>
             <motion.div
               className="w-1/2 h-full relative"
@@ -45,7 +45,7 @@ export default function Hero({ mandalName, inviteLine }: HeroProps) {
               exit={{ x: "100%" }}
               transition={{ duration: 1.3, ease: [0.76, 0, 0.24, 1] }}
             >
-              <Image src="/images/doors/right-door.webp" alt="" fill className="object-cover object-left" priority />
+              <Image src="/images/doors/right-door.png" alt="" fill className="object-cover object-left" priority />
             </motion.div>
             <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 gap-4 text-center px-6">
               <button

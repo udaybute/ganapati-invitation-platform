@@ -851,3 +851,27 @@ html.admin-light {
 
   --admin-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
 }
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+@keyframes garland-swing-left {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+@keyframes garland-swing-right {
+  0%, 100% { transform: rotate(6deg); }
+  50% { transform: rotate(-6deg); }
+}
+.garland-swing-left {
+  transform-origin: top center;
+  animation: garland-swing-left 3.2s ease-in-out infinite;
+}
+.garland-swing-right {
+  transform-origin: top center;
+  animation: garland-swing-right 3.2s ease-in-out infinite;
+}
