@@ -1,165 +1,525 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-export type GalleryPhoto = { url: string; caption?: string };
-type GalleryProps = { photos: GalleryPhoto[] };
-
-const FRAME = {
-  mobile: { top: "32.5%", bottom: "11.5%", left: "13.5%", right: "14%" },
-  desktop: { top: "38%", bottom: "10%", left: "12.5%", right: "12.5%" },
+export type GalleryPhoto = {
+  url: string;
+  caption?: string;
 };
 
-// Continuously auto-scrolls right-to-left, no visible scrollbar, and the user
-// can grab it with a finger to drag — auto-scroll pauses while touching, then resumes.
-function MarqueeStrip({ photos, onSelect }: { photos: GalleryPhoto[]; onSelect: (i: number) => void }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const isInteracting = useRef(false);
-  const doubled = [...photos, ...photos]; // duplicated for a seamless loop
+type GalleryProps = {
+  photos: GalleryPhoto[];
+};
 
-  useEffect(() => {
-    let raf: number;
-    const speed = 0.6; // px per frame — smooth, continuous, no jump/delay
-    const step = () => {
-      const el = trackRef.current;
-      if (el && !isInteracting.current) {
-        el.scrollLeft += speed;
-        const half = el.scrollWidth / 2;
-        if (el.scrollLeft >= half) el.scrollLeft -= half; // seamless reset
-      }
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [photos.length]);
+const FRAME = {
+  mobile: {
+    top: "32.5%",
+    bottom: "11.5%",
+    left: "13.5%",
+    right: "14%",
+  },
+
+  desktop: {
+    top: "38%",
+    bottom: "10%",
+    left: "12.5%",
+    right: "12.5%",
+  },
+};
+
+/* ============================================================
+   MARQUEE STRIP
+
+   IMPORTANT:
+   - Does NOT use scrollLeft
+   - Does NOT depend on screen refresh rate
+   - Supabase images use unoptimized
+   - Continuous smooth movement
+============================================================ */
+
+function MarqueeStrip({
+  photos,
+  onSelect,
+}: {
+  photos: GalleryPhoto[];
+  onSelect: (i: number) => void;
+}) {
+  if (photos.length === 0) return null;
+
+  /*
+   * For one image, no marquee is required.
+   */
+
+  if (photos.length === 1) {
+    return (
+      <div className="flex w-full justify-center pb-1">
+        <button
+          type="button"
+          onClick={() => onSelect(0)}
+          className="
+            relative
+            h-9
+            w-9
+            shrink-0
+            overflow-hidden
+            rounded-md
+            border-2
+            border-amber-400
+            sm:h-11
+            sm:w-11
+          "
+        >
+          <Image
+            src={photos[0].url}
+            alt=""
+            fill
+            unoptimized
+            sizes="44px"
+            className="object-cover"
+          />
+        </button>
+      </div>
+    );
+  }
+
+  /*
+   * Duplicate photos for seamless marquee.
+   */
+  const duplicatedPhotos = [...photos, ...photos];
 
   return (
     <div
-      ref={trackRef}
-      onPointerDown={() => (isInteracting.current = true)}
-      onPointerUp={() => setTimeout(() => (isInteracting.current = false), 1500)}
-      onPointerLeave={() => (isInteracting.current = false)}
-      className="no-scrollbar flex gap-1.5 overflow-x-auto max-w-full pb-1"
-      style={{ touchAction: "pan-x" }}
+      className="
+        relative
+        w-full
+        max-w-full
+        overflow-hidden
+        pb-1
+      "
     >
-      {doubled.map((p, i) => (
-        <button
-          key={i}
-          onClick={() => onSelect(i % photos.length)}
-          className="relative w-9 h-9 sm:w-11 sm:h-11 shrink-0 rounded-md overflow-hidden border-2 border-amber-400/40 hover:border-amber-400 transition-colors"
-        >
-          <Image src={p.url} alt="" fill className="object-cover" />
-        </button>
-      ))}
+      <motion.div
+        className="
+          flex
+          w-max
+          gap-1.5
+        "
+        animate={{
+          x: ["0%", "-50%"],
+        }}
+        transition={{
+          x: {
+            duration: Math.max(photos.length * 3, 18),
+            repeat: Infinity,
+            ease: "linear",
+          },
+        }}
+      >
+        {duplicatedPhotos.map((photo, index) => (
+          <button
+            key={`${photo.url}-${index}`}
+            type="button"
+            onClick={() => onSelect(index % photos.length)}
+            className="
+              relative
+              h-9
+              w-9
+              shrink-0
+              overflow-hidden
+              rounded-md
+              border-2
+              border-amber-400/40
+              transition-all
+              duration-300
+
+              hover:border-amber-400
+              active:scale-95
+
+              sm:h-11
+              sm:w-11
+            "
+          >
+            <Image
+              src={photo.url}
+              alt=""
+              fill
+              unoptimized
+              sizes="44px"
+              className="object-cover"
+            />
+          </button>
+        ))}
+      </motion.div>
     </div>
   );
 }
 
-// MOBILE — single photo, auto-changes every 3.5s with a crossfade
-function MobileShowcase({ photos }: { photos: GalleryPhoto[] }) {
+/* ============================================================
+   MOBILE SHOWCASE
+
+   Main image changes every 3.5 seconds.
+============================================================ */
+
+function MobileShowcase({
+  photos,
+}: {
+  photos: GalleryPhoto[];
+}) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
     if (photos.length <= 1) return;
-    const id = setInterval(() => setActive((a) => (a + 1) % photos.length), 3500);
-    return () => clearInterval(id);
+
+    const id = window.setInterval(() => {
+      setActive((current) => (current + 1) % photos.length);
+    }, 3500);
+
+    return () => {
+      window.clearInterval(id);
+    };
   }, [photos.length]);
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-1">
-      <div className="relative w-full max-w-[420px] flex-1 min-h-0 rounded-xl overflow-hidden">
+    <div
+      className="
+        flex
+        h-full
+        w-full
+        flex-col
+        items-center
+        justify-center
+        gap-2
+        px-1
+      "
+    >
+      {/* ==================================================
+          MAIN MOBILE PHOTO
+      ================================================== */}
+
+      <div
+        className="
+          relative
+          min-h-0
+          w-full
+          max-w-[420px]
+          flex-1
+          overflow-hidden
+          rounded-xl
+        "
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{
+              opacity: 0,
+              scale: 1.02,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.995,
+            }}
+            transition={{
+              duration: 0.65,
+              ease: "easeInOut",
+            }}
             className="absolute inset-0"
           >
-            <Image src={photos[active].url} alt={photos[active].caption ?? ""} fill className="object-cover" />
+            <Image
+              src={photos[active].url}
+              alt={photos[active].caption ?? ""}
+              fill
+              unoptimized
+              sizes="(max-width: 768px) 100vw, 420px"
+              className="object-cover"
+              priority={active === 0}
+            />
           </motion.div>
         </AnimatePresence>
-        <div className="absolute top-2 left-2 z-10 bg-black/50 text-amber-100 text-[10px] px-2 py-0.5 rounded-full">
-          {String(active + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
+
+        {/* PHOTO COUNTER */}
+
+        <div
+          className="
+            absolute
+            left-2
+            top-2
+            z-10
+
+            rounded-full
+            bg-black/50
+
+            px-2
+            py-0.5
+
+            text-[10px]
+            text-amber-100
+
+            backdrop-blur-sm
+          "
+        >
+          {String(active + 1).padStart(2, "0")} /{" "}
+          {String(photos.length).padStart(2, "0")}
         </div>
+
+        {/* CAPTION */}
+
         {photos[active].caption && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/70 to-transparent p-2 text-left">
-            <p className="text-amber-100 text-xs font-medium">{photos[active].caption}</p>
+          <div
+            className="
+              absolute
+              bottom-0
+              left-0
+              right-0
+              z-10
+
+              bg-gradient-to-t
+              from-black/70
+              via-black/20
+              to-transparent
+
+              p-2
+              text-left
+            "
+          >
+            <p className="text-xs font-medium text-amber-100">
+              {photos[active].caption}
+            </p>
           </div>
         )}
       </div>
-      <MarqueeStrip photos={photos} onSelect={setActive} />
+
+      {/* MOBILE THUMBNAILS */}
+
+      <MarqueeStrip
+        photos={photos}
+        onSelect={setActive}
+      />
     </div>
   );
 }
 
-// DESKTOP — 3x3 grid, cells rotate through all photos every 4s with a crossfade
-function DesktopShowcase({ photos }: { photos: GalleryPhoto[] }) {
+/* ============================================================
+   DESKTOP SHOWCASE
+
+   3 x 3 grid.
+============================================================ */
+
+function DesktopShowcase({
+  photos,
+}: {
+  photos: GalleryPhoto[];
+}) {
   const cells = 9;
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
-    if (photos.length <= cells) return; // nothing to rotate if everything already fits
-    const id = setInterval(() => setOffset((o) => (o + 1) % photos.length), 4000);
-    return () => clearInterval(id);
+    if (photos.length <= cells) return;
+
+    const id = window.setInterval(() => {
+      setOffset(
+        (current) => (current + 1) % photos.length
+      );
+    }, 4000);
+
+    return () => {
+      window.clearInterval(id);
+    };
   }, [photos.length]);
 
-  const shown = Array.from({ length: Math.min(cells, photos.length) }).map(
-    (_, i) => photos[(offset + i) % photos.length]
+  const shown = Array.from({
+    length: Math.min(cells, photos.length),
+  }).map(
+    (_, index) =>
+      photos[(offset + index) % photos.length]
   );
 
   return (
-    <div className="flex h-full w-full flex-col gap-3 px-2 py-1">
-      <div className="grid grid-cols-3 grid-rows-3 gap-2 flex-1 min-h-0">
+    <div
+      className="
+        flex
+        h-full
+        w-full
+        flex-col
+        gap-3
+        px-2
+        py-1
+      "
+    >
+      {/* ==================================================
+          3 × 3 GRID
+      ================================================== */}
+
+      <div
+        className="
+          grid
+          min-h-0
+          flex-1
+
+          grid-cols-3
+          grid-rows-3
+
+          gap-2
+        "
+      >
         <AnimatePresence mode="popLayout">
-          {shown.map((p, i) => (
+          {shown.map((photo, index) => (
             <motion.div
-              key={`${offset}-${i}`}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.7 }}
-              className="relative rounded-lg overflow-hidden"
+              key={`${photo.url}-${offset}-${index}`}
+              initial={{
+                opacity: 0,
+                scale: 0.96,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.98,
+              }}
+              transition={{
+                duration: 0.7,
+                ease: "easeInOut",
+              }}
+              className="
+                relative
+                overflow-hidden
+                rounded-lg
+              "
             >
-              <Image src={p.url} alt={p.caption ?? ""} fill className="object-cover" />
+              <Image
+                src={photo.url}
+                alt={photo.caption ?? ""}
+                fill
+                unoptimized
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="object-cover"
+              />
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
-      <MarqueeStrip photos={photos} onSelect={setOffset} />
+
+      {/* DESKTOP THUMBNAILS */}
+
+      <MarqueeStrip
+        photos={photos}
+        onSelect={setOffset}
+      />
     </div>
   );
 }
 
-export default function Gallery({ photos }: GalleryProps) {
-  if (photos.length === 0) return null;
+/* ============================================================
+   MAIN GALLERY
+============================================================ */
+
+export default function Gallery({
+  photos,
+}: GalleryProps) {
+  if (photos.length === 0) {
+    return null;
+  }
 
   return (
-    <section className="relative">
-      <h2 className="sr-only">छायाचित्र गॅलरी</h2>
+    <section
+      className="
+        relative
+        w-full
+        overflow-hidden
+      "
+    >
+      {/* ACCESSIBILITY */}
 
-      {/* MOBILE */}
-      <div className="relative w-full md:hidden" style={{ aspectRatio: "1023 / 1537" }}>
-        <Image src="/images/backgrounds/gallery-mobile-bg.png" alt="" fill className="object-cover -z-10" />
+      <h2 className="sr-only">
+        छायाचित्र गॅलरी
+      </h2>
+
+      {/* =====================================================
+          MOBILE
+      ====================================================== */}
+
+      <div
+        className="
+          relative
+          w-full
+          md:hidden
+        "
+        style={{
+          aspectRatio: "1023 / 1537",
+        }}
+      >
+        <Image
+          src="/images/backgrounds/gallery-mobile-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="
+            -z-10
+            object-cover
+          "
+        />
+
         <div
           className="absolute"
-          style={{ top: FRAME.mobile.top, bottom: FRAME.mobile.bottom, left: FRAME.mobile.left, right: FRAME.mobile.right }}
+          style={{
+            top: FRAME.mobile.top,
+            bottom: FRAME.mobile.bottom,
+            left: FRAME.mobile.left,
+            right: FRAME.mobile.right,
+          }}
         >
-          <MobileShowcase photos={photos} />
+          <MobileShowcase
+            photos={photos}
+          />
         </div>
       </div>
 
-      {/* DESKTOP */}
-      <div className="relative w-full hidden md:block" style={{ aspectRatio: "1536 / 1024" }}>
-        <Image src="/images/backgrounds/gallery-desktop-bg.png" alt="" fill className="object-cover -z-10" />
+      {/* =====================================================
+          DESKTOP
+      ====================================================== */}
+
+      <div
+        className="
+          relative
+          hidden
+          w-full
+          md:block
+        "
+        style={{
+          aspectRatio: "1536 / 1024",
+        }}
+      >
+        <Image
+          src="/images/backgrounds/gallery-desktop-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="
+            -z-10
+            object-cover
+          "
+        />
+
         <div
           className="absolute"
-          style={{ top: FRAME.desktop.top, bottom: FRAME.desktop.bottom, left: FRAME.desktop.left, right: FRAME.desktop.right }}
+          style={{
+            top: FRAME.desktop.top,
+            bottom: FRAME.desktop.bottom,
+            left: FRAME.desktop.left,
+            right: FRAME.desktop.right,
+          }}
         >
-          <DesktopShowcase photos={photos} />
+          <DesktopShowcase
+            photos={photos}
+          />
         </div>
       </div>
     </section>
