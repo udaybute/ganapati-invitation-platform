@@ -17,7 +17,7 @@ export default function Footer({
     <footer className="relative overflow-hidden px-6 py-12 text-center">
       {/* Footer Background */}
       <Image
-        src="/images/backgrounds/footer-background.png"
+        src="/images/backgrounds/footer-mobile-background.png"
         alt=""
         fill
         priority={false}

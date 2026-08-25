@@ -79,22 +79,40 @@ export default function Timeline({ events }: TimelineProps) {
   }
 
   return (
-    <section
-      className="
-        relative
-        overflow-hidden
-        bg-gradient-to-b
-        from-amber-50
-        via-[#fff8e8]
-        to-amber-100/80
-        px-4
-        py-16
-        sm:px-6
-        sm:py-20
-        lg:px-8
-        lg:py-24
-      "
-    >
+   <section
+  className="
+    relative
+    overflow-hidden
+    px-4
+    py-16
+    sm:px-6
+    sm:py-20
+    lg:px-8
+    lg:py-24
+  "
+>
+  {/* BACKGROUND */}
+  <Image
+    src="/images/backgrounds/timeline-bg.png"
+    alt=""
+    fill
+    priority
+    sizes="100vw"
+    className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center"
+  />
+
+  {/* SOFT OVERLAY */}
+  <div
+    aria-hidden="true"
+    className="
+      pointer-events-none
+      absolute
+      inset-0
+      -z-10
+      bg-[#fff8e8]/20
+    "
+  />
+
       {/* ========================================================
           BACKGROUND DECORATION
       ======================================================== */}

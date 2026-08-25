@@ -113,7 +113,7 @@ export default function Blessings() {
     <section className="relative overflow-hidden px-6 py-14 text-center">
 
       {/* =====================================================
-          RESPONSIVE BACKGROUND
+          RESPONSIVE BACKGROUND images
       ====================================================== */}
 
       <Image
@@ -123,7 +123,6 @@ export default function Blessings() {
         priority
         className="
           pointer-events-none
-          -z-20
           hidden
           object-cover
           md:block
@@ -131,13 +130,12 @@ export default function Blessings() {
       />
 
       <Image
-        src="/images/backgrounds/invitation-mobile-bg.png"
+        src="/images/backgrounds/blessing-bg.png"
         alt=""
         fill
         priority
         className="
           pointer-events-none
-          -z-20
           object-cover
           md:hidden
         "
