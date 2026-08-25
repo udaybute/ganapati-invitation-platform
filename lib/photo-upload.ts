@@ -1,25 +1,15 @@
-import imageCompression from "browser-image-compression";
+// lib/photo-upload.ts — poori file replace karo
 import { supabase } from "./supabase-client";
 
-// Compresses a photo to png in the browser BEFORE upload — keeps Supabase's
-// free storage tier lasting far longer across 1000 clients, and makes pages load fast.
-async function compressTopng(file: File): Promise<File> {
-  const compressed = await imageCompression(file, {
-    maxSizeMB: 0.35,
-    maxWidthOrHeight: 1600,
-    fileType: "image/png",
-    useWebWorker: true,
-  });
-  return compressed;
-}
-
-// Compresses + uploads one photo, returns its public URL
+// Uploads the photo EXACTLY as the client selected it — no compression,
+// no format conversion. Original quality, resolution, and file type
+// (jpg/png/whatever they uploaded) are preserved as-is.
 export async function uploadPhoto(file: File, folder: string): Promise<string> {
-  const compressed = await compressTopng(file);
-  const filename = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
+  const ext = file.name.split(".").pop() || "jpg";
+  const filename = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-  const { error } = await supabase.storage.from("mandal-photos").upload(filename, compressed, {
-    contentType: "image/png",
+  const { error } = await supabase.storage.from("mandal-photos").upload(filename, file, {
+    contentType: file.type || "image/jpeg",
     upsert: false,
   });
   if (error) throw error;
@@ -28,7 +18,6 @@ export async function uploadPhoto(file: File, folder: string): Promise<string> {
   return data.publicUrl;
 }
 
-// Compresses + uploads a batch of photos, reports progress via callback
 export async function uploadPhotos(
   files: File[],
   folder: string,

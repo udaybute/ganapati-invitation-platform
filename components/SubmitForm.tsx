@@ -7,11 +7,14 @@ import { getUniqueSlug } from "@/lib/slug";
 import { uploadPhotos } from "@/lib/photo-upload";
 
 type TimelineDraft = {
+  id: string;
   title: string;
   summary: string;
   date: string;
   time: string;
-  place: string;
+  morningTime?: string;   // सिर्फ आरती के लिए
+  eveningTime?: string;   // सिर्फ आरती के लिए
+  presetKey?: string;
 };
 
 type GalleryDraft = {
@@ -20,13 +23,71 @@ type GalleryDraft = {
   preview: string;
 };
 
+// Common Ganpati festival events — client ticks what applies, no typing needed.
+// Title/summary come pre-filled (still editable); only date/time need filling in.
+// Place is intentionally NOT collected per event — it's the same venue for every
+// event, already captured once in the "पत्ता" field in Step 1.
+const PRESET_EVENTS: { key: string; title: string; summary: string }[] = [
+  { key: "sthapana", title: "स्थापना", summary: "गणरायाचे आगमन आणि मंगलमय स्थापना सोहळा" },
+  { key: "aarti", title: "आरती", summary: "दररोजची सकाळ-संध्याकाळ आरती व मंगलमय प्रार्थना" },
+  { key: "satyanarayan", title: "सत्यनारायण पूजा", summary: "श्री सत्यनारायण महाराजांची पूजा आणि कथा" },
+  { key: "dhol", title: "ढोल पथक व स्पर्धा", summary: "ढोल पथक, विविध मनोरंजनात्मक स्पर्धा आणि Funfair" },
+  { key: "mahaprasad", title: "महाप्रसाद", summary: "महाप्रसादाचा नैवेद्य आणि भाविकांसाठी वितरण" },
+  { key: "karyakram", title: "विविध कार्यक्रम", summary: "सांस्कृतिक, मनोरंजनात्मक आणि सामाजिक कार्यक्रम" },
+  { key: "visarjan", title: "विसर्जन सोहळा", summary: "गणरायाच्या निरोपाचा भावपूर्ण विसर्जन सोहळा" },
+];
+
+// Filled in when the client clicks "उदाहरण संदेश वापरा" so they have a starting point
+const INVITE_EXAMPLE =
+  "गणरायाच्या आगमनाने आपले घर आणि मन प्रसन्नतेने भरून जावो. आमच्या मंडळाच्या गणेशोत्सवाच्या मंगल सोहळ्यात सहभागी होण्यासाठी आपणास व आपल्या परिवारास सस्नेह निमंत्रण. आपल्या उपस्थितीने आमचा उत्सव अधिक आनंददायी होईल.";
+
+const makeId = () => Math.random().toString(36).slice(2, 10);
+
 const emptyEvent = (): TimelineDraft => ({
+  id: makeId(),
   title: "",
   summary: "",
   date: "",
   time: "",
-  place: "",
 });
+
+// Parses "07:30 PM" style strings back into parts so the picker shows the current selection
+function parseTime12(value: string) {
+  const match = value?.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/i);
+  if (match) {
+    return { hour: String(parseInt(match[1], 10)), minute: match[2], period: match[3].toUpperCase() };
+  }
+  return { hour: "7", minute: "00", period: "AM" };
+}
+
+// 12-hour dropdown time picker (hour 1-12 / minute 00-59 / AM-PM) — always outputs "07:30 PM" format
+function TimePicker12({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const parsed = parseTime12(value);
+
+  const setPart = (part: "hour" | "minute" | "period", v: string) => {
+    const next = { ...parsed, [part]: v };
+    onChange(`${next.hour.padStart(2, "0")}:${next.minute} ${next.period}`);
+  };
+
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      <select className="input" value={parsed.hour} onChange={(e) => setPart("hour", e.target.value)}>
+        {Array.from({ length: 12 }, (_, i) => String(i + 1)).map((h) => (
+          <option key={h} value={h}>{h}</option>
+        ))}
+      </select>
+      <select className="input" value={parsed.minute} onChange={(e) => setPart("minute", e.target.value)}>
+        {Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")).map((m) => (
+          <option key={m} value={m}>{m}</option>
+        ))}
+      </select>
+      <select className="input" value={parsed.period} onChange={(e) => setPart("period", e.target.value)}>
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </div>
+  );
+}
 
 export default function SubmitForm() {
   const router = useRouter();
@@ -45,27 +106,50 @@ export default function SubmitForm() {
   const [mapsLink, setMapsLink] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
 
-  const [events, setEvents] = useState<TimelineDraft[]>([emptyEvent()]);
+  const [events, setEvents] = useState<TimelineDraft[]>([]);
   const [gallery, setGallery] = useState<GalleryDraft[]>([]);
 
   const updateEvent = (
-    i: number,
+    id: string,
     field: keyof TimelineDraft,
     value: string
   ) => {
     setEvents((prev) =>
-      prev.map((ev, idx) =>
-        idx === i ? { ...ev, [field]: value } : ev
+      prev.map((ev) =>
+        ev.id === id ? { ...ev, [field]: value } : ev
       )
     );
   };
 
-  const addEvent = () =>
+  const addCustomEvent = () =>
     events.length < 10 &&
     setEvents((p) => [...p, emptyEvent()]);
 
-  const removeEvent = (i: number) =>
-    setEvents((p) => p.filter((_, idx) => idx !== i));
+  const removeEvent = (id: string) =>
+    setEvents((p) => p.filter((ev) => ev.id !== id));
+
+  // Toggling a preset checkbox adds/removes its pre-filled event
+  const togglePreset = (preset: (typeof PRESET_EVENTS)[number]) => {
+    setEvents((prev) => {
+      const exists = prev.find((ev) => ev.presetKey === preset.key);
+      if (exists) return prev.filter((ev) => ev.presetKey !== preset.key);
+      if (prev.length >= 10) return prev;
+      return [
+        ...prev,
+        {
+          id: makeId(),
+          title: preset.title,
+          summary: preset.summary,
+          date: "",
+          time: "",
+          presetKey: preset.key,
+        },
+      ];
+    });
+  };
+
+  const isPresetSelected = (key: string) =>
+    events.some((ev) => ev.presetKey === key);
 
   const handlePhotos = (files: FileList | null) => {
     if (!files) return;
@@ -131,6 +215,19 @@ export default function SubmitForm() {
 
       setProgress("Details save ho rahi hain...");
 
+      // आरती के 2 times ko ek readable string mein combine karte hain, date nahi bhejte
+      const finalTimeline = events
+        .filter((e) => e.title.trim())
+        .map((e) => {
+          if (e.presetKey === "aarti") {
+            const parts: string[] = [];
+            if (e.morningTime) parts.push(`सकाळी ${e.morningTime}`);
+            if (e.eveningTime) parts.push(`सायंकाळी ${e.eveningTime}`);
+            return { title: e.title, summary: e.summary, time: parts.join(" व ") };
+          }
+          return { title: e.title, summary: e.summary, date: e.date, time: e.time };
+        });
+
       const { error: insertError } = await supabase
         .from("mandals")
         .insert({
@@ -143,7 +240,7 @@ export default function SubmitForm() {
           address,
           maps_link: mapsLink,
           instagram_url: instagramUrl || null,
-          timeline: events.filter((e) => e.title.trim()),
+                    timeline: finalTimeline,
           gallery: galleryData,
           status: "pending",
         });
@@ -358,6 +455,13 @@ export default function SubmitForm() {
                       rows={4}
                       placeholder="गणपती बाप्पांच्या आगमनानिमित्त..."
                     />
+                    <button
+                      type="button"
+                      onClick={() => setInviteMessage(INVITE_EXAMPLE)}
+                      className="mt-1.5 self-start text-[11px] text-amber-300/90 underline underline-offset-2 hover:text-amber-200"
+                    >
+                      उदाहरण संदेश वापरा
+                    </button>
                   </Field>
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -397,7 +501,7 @@ export default function SubmitForm() {
                     />
                   </Field>
 
-                  <Field label="Google Maps लिंक">
+                  <Field label="Google Maps लिंक (पत्ता)">
                     <input
                       value={mapsLink}
                       onChange={(e) =>
@@ -406,6 +510,9 @@ export default function SubmitForm() {
                       className="input"
                       placeholder="https://maps.google.com/..."
                     />
+                    <p className="mt-1.5 text-[11px] leading-relaxed text-white/45">
+                      टीप: Google Maps app मध्ये तुमचे ठिकाण उघडा → Share बटण दाबा → &quot;Copy link&quot; निवडा → तो लिंक इथे paste करा.
+                    </p>
                   </Field>
 
                   <Field label="Instagram लिंक (optional)">
@@ -442,130 +549,155 @@ export default function SubmitForm() {
                   </h2>
 
                   <p className="section-subtitle">
-                    मंडळातील कार्यक्रम आणि त्यांची माहिती भरा.
+                    कोणते कार्यक्रम असतील ते निवडा — शीर्षक व माहिती आपोआप भरली जाईल,
+                    फक्त दिनांक आणि वेळ भरायची आहे. (स्थळ सर्व कार्यक्रमांसाठी common आहे,
+                    ते आधीच &quot;पत्ता&quot; मध्ये घेतले आहे — इथे परत भरण्याची गरज नाही.)
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-4">
 
-                  {events.map((ev, i) => (
-                    <div
-                      key={i}
-                      className="event-card animate-card-enter"
-                      style={{
-                        animationDelay: `${i * 70}ms`,
-                      }}
-                    >
-
-                      <div className="mb-3 flex items-center justify-between">
-
-                        <div className="flex items-center gap-2">
-                          <span className="event-number">
-                            {i + 1}
-                          </span>
-
-                          <span className="font-semibold text-amber-100">
-                            कार्यक्रम {i + 1}
-                          </span>
-                        </div>
-
-                        {events.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              removeEvent(i)
-                            }
-                            className="remove-button"
-                          >
-                            काढा
-                          </button>
-                        )}
-
-                      </div>
-
-                      <div className="flex flex-col gap-3">
-
-                        <input
-                          placeholder="शीर्षक (उदा. स्थापना)"
-                          value={ev.title}
-                          onChange={(e) =>
-                            updateEvent(
-                              i,
-                              "title",
-                              e.target.value
-                            )
+                  {/* PRESET CHECKLIST */}
+                  <div className="flex flex-col gap-2">
+                    {PRESET_EVENTS.map((preset) => {
+                      const checked = isPresetSelected(preset.key);
+                      return (
+                        <label
+                          key={preset.key}
+                          className="event-card flex cursor-pointer items-start gap-3 !py-3"
+                          style={
+                            checked
+                              ? { borderColor: "rgba(251, 191, 36, 0.55)", background: "rgba(251, 191, 36, 0.06)" }
+                              : undefined
                           }
-                          className="input"
-                        />
-
-                        <input
-                          placeholder="थोडक्यात माहिती"
-                          value={ev.summary}
-                          onChange={(e) =>
-                            updateEvent(
-                              i,
-                              "summary",
-                              e.target.value
-                            )
-                          }
-                          className="input"
-                        />
-
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
+                        >
                           <input
-                            placeholder="दिनांक"
-                            value={ev.date}
-                            onChange={(e) =>
-                              updateEvent(
-                                i,
-                                "date",
-                                e.target.value
-                              )
-                            }
-                            className="input"
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => togglePreset(preset)}
+                            className="mt-1 h-4 w-4 accent-amber-400"
                           />
+                          <span>
+                            <span className="block text-sm font-semibold text-amber-100">
+                              {preset.title}
+                            </span>
+                            <span className="mt-0.5 block text-xs text-white/50">
+                              {preset.summary}
+                            </span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
 
-                          <input
-                            placeholder="वेळ"
-                            value={ev.time}
-                            onChange={(e) =>
-                              updateEvent(
-                                i,
-                                "time",
-                                e.target.value
-                              )
-                            }
-                            className="input"
-                          />
+                  {/* SELECTED EVENTS — fill date/time */}
+                  {events.length > 0 && (
+                    <div className="flex flex-col gap-4">
+                      <p className="text-xs font-medium text-amber-200/80">
+                        निवडलेले कार्यक्रम — दिनांक व वेळ भरा:
+                      </p>
 
+                      {events.map((ev, i) => (
+                        <div
+                          key={ev.id}
+                          className="event-card animate-card-enter"
+                          style={{
+                            animationDelay: `${i * 70}ms`,
+                          }}
+                        >
+
+                          <div className="mb-3 flex items-center justify-between">
+
+                            <div className="flex items-center gap-2">
+                              <span className="event-number">
+                                {i + 1}
+                              </span>
+
+                              <span className="font-semibold text-amber-100">
+                                {ev.title || `कार्यक्रम ${i + 1}`}
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => removeEvent(ev.id)}
+                              className="remove-button"
+                            >
+                              काढा
+                            </button>
+
+                          </div>
+
+                          <div className="flex flex-col gap-3">
+
+                            {!ev.presetKey && (
+                              <>
+                                <input
+                                  placeholder="शीर्षक (उदा. रक्तदान शिबिर)"
+                                  value={ev.title}
+                                  onChange={(e) =>
+                                    updateEvent(ev.id, "title", e.target.value)
+                                  }
+                                  className="input"
+                                />
+
+                                <input
+                                  placeholder="थोडक्यात माहिती"
+                                  value={ev.summary}
+                                  onChange={(e) =>
+                                    updateEvent(ev.id, "summary", e.target.value)
+                                  }
+                                  className="input"
+                                />
+                              </>
+                            )}
+
+                            {ev.presetKey === "aarti" ? (
+                              <div className="flex flex-col gap-3">
+                                <div>
+                                  <p className="mb-1.5 text-xs text-amber-200/70">सकाळची आरती वेळ</p>
+                                  <TimePicker12
+                                    value={ev.morningTime || ""}
+                                    onChange={(v) => updateEvent(ev.id, "morningTime", v)}
+                                  />
+                                </div>
+                                <div>
+                                  <p className="mb-1.5 text-xs text-amber-200/70">सांयकाळची आरती वेळ</p>
+                                  <TimePicker12
+                                    value={ev.eveningTime || ""}
+                                    onChange={(v) => updateEvent(ev.id, "eveningTime", v)}
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col gap-3">
+                                <input
+                                  type="date"
+                                  value={ev.date}
+                                  onChange={(e) => updateEvent(ev.id, "date", e.target.value)}
+                                  className="input"
+                                />
+                                <TimePicker12
+                                  value={ev.time}
+                                  onChange={(v) => updateEvent(ev.id, "time", v)}
+                                />
+                              </div>
+                            )}
+
+                          </div>
                         </div>
-
-                        <input
-                          placeholder="स्थळ"
-                          value={ev.place}
-                          onChange={(e) =>
-                            updateEvent(
-                              i,
-                              "place",
-                              e.target.value
-                            )
-                          }
-                          className="input"
-                        />
-
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
 
                   {events.length < 10 && (
                     <button
                       type="button"
-                      onClick={addEvent}
+                      onClick={addCustomEvent}
                       className="add-event-button"
                     >
                       <span className="text-lg">+</span>
-                      आणखी कार्यक्रम जोडा
+                      वेगळा/खास कार्यक्रम जोडा
                     </button>
                   )}
 

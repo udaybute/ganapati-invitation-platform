@@ -8,6 +8,7 @@ import Location from "@/components/Location";
 import Gallery from "@/components/Gallery";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase-client";
+import ScrollReveal from "@/components/animations/ScrollReveal";
 
 // Generates a unique WhatsApp/social share preview per client — same slug pattern as the page below
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -53,14 +54,38 @@ export default async function InvitationPage({ params }: { params: Promise<{ slu
 
   return (
     <main>
-      <Hero mandalName={client.mandalName} inviteLine={client.inviteLine} />
+      <ScrollReveal>  
+        <Hero mandalName={client.mandalName} inviteLine={client.inviteLine} />
+      </ScrollReveal>
+      
+      <ScrollReveal> 
       <InvitationCard mandalName={client.mandalName} message={client.inviteMessage} />
+      </ScrollReveal>
+      
+      <ScrollReveal> 
       <MurtiCarousel mandalName={client.mandalName} establishedYear={client.establishedYear} photos={client.murtiPhotos} />
+      </ScrollReveal>
+      
+
+<ScrollReveal> 
       <Timeline events={client.timelineEvents} />
+      </ScrollReveal>
+      
+
+      <ScrollReveal> 
       <Location mandalName={client.mandalName} address={client.address} contact={client.contact} mapEmbedUrl={client.mapEmbedUrl} mapsLink={client.mapsLink} />
+      </ScrollReveal>
+      
+      <ScrollReveal> 
       <Blessings />
+      </ScrollReveal> 
+
+      <ScrollReveal> 
       <Gallery photos={client.galleryPhotos} />
+      </ScrollReveal> 
+      <ScrollReveal> 
       <Footer mandalName={client.mandalName} contact={client.contact} address={client.address} instagramUrl={client.instagramUrl} />
+    </ScrollReveal> 
     </main>
   );
 }

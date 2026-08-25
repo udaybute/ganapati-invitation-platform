@@ -13,12 +13,44 @@ export default function InvitationCard({
   message,
 }: InvitationCardProps) {
   return (
-    <section className="relative overflow-visible bg-gradient-to-b from-amber-50 to-white px-6 py-10">
+    <section
+      className="
+        relative
+        w-full
+        overflow-hidden
+        bg-gradient-to-b
+        from-amber-50
+        via-[#fffaf0]
+        to-white
+        px-4
+        py-10
+        sm:px-6
+        sm:py-12
+      "
+    >
       {/* =====================================================
           TOP DIVIDER
       ====================================================== */}
 
-      <div className="mb-4 flex justify-center">
+      <motion.div
+        initial={{
+          opacity: 0,
+          scaleX: 0.7,
+        }}
+        whileInView={{
+          opacity: 1,
+          scaleX: 1,
+        }}
+        viewport={{
+          once: true,
+          amount: 0.3,
+        }}
+        transition={{
+          duration: 0.8,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="mb-5 flex justify-center"
+      >
         <Image
           src="/images/decorations/divider.png"
           alt=""
@@ -26,196 +58,610 @@ export default function InvitationCard({
           height={40}
           className="object-contain"
         />
-      </div>
+      </motion.div>
 
       {/* =====================================================
-          INVITATION CARD
+          CARD WRAPPER
       ====================================================== */}
 
-      <div className="relative mx-auto w-full max-w-md overflow-visible">
+      <div
+        className="
+          relative
+          mx-auto
+          w-full
+          max-w-md
+          sm:max-w-lg
+        "
+      >
         {/* ===================================================
-            LEFT BAL GANESH
-        ==================================================== */}
-
-        <motion.div
-          className="
-            pointer-events-none
-            absolute
-            left-[-72px]
-            top-[-35px]
-            z-30
-            h-[210px]
-            w-[170px]
-            sm:left-[-85px]
-            sm:top-[-40px]
-            sm:h-[230px]
-            sm:w-[185px]
-          "
-          animate={{
-            opacity: [0, 1, 1, 0],
-            x: [-20, 0, 0, -18],
-            y: [12, 0, -3, 8],
-            rotate: [-4, 0, 1, -3],
-            scale: [0.92, 1, 1.015, 0.94],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            repeatDelay: 0.2,
-            times: [0, 0.12, 0.38, 0.5],
-            ease: "easeInOut",
-          }}
-        >
-          <Image
-            src="/images/decorations/bal-ganesh-left.png"
-            alt=""
-            fill
-            priority
-            sizes="185px"
-            className="select-none object-contain"
-          />
-        </motion.div>
-
-        {/* ===================================================
-            RIGHT BAL GANESH
-        ==================================================== */}
-
-        <motion.div
-          className="
-            pointer-events-none
-            absolute
-            right-[-72px]
-            top-[-35px]
-            z-30
-            h-[210px]
-            w-[170px]
-            sm:right-[-85px]
-            sm:top-[-40px]
-            sm:h-[230px]
-            sm:w-[185px]
-          "
-          animate={{
-            opacity: [0, 0, 1, 1, 0],
-            x: [18, 18, 0, 0, 20],
-            y: [8, 8, -3, 0, 12],
-            rotate: [3, 3, -1, 0, 4],
-            scale: [0.94, 0.94, 1, 1.015, 0.93],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            repeatDelay: 0.2,
-            times: [0, 0.5, 0.62, 0.88, 1],
-            ease: "easeInOut",
-          }}
-        >
-          <Image
-            src="/images/decorations/bal-ganesh-right.png"
-            alt=""
-            fill
-            sizes="185px"
-            className="select-none object-contain"
-          />
-        </motion.div>
-
-        {/* ===================================================
-            MAIN CARD
+            MAIN INVITATION CARD
         ==================================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 20,
+            y: 25,
+            scale: 0.97,
           }}
           whileInView={{
             opacity: 1,
             y: 0,
+            scale: 1,
           }}
           viewport={{
             once: true,
-            amount: 0.3,
+            amount: 0.25,
           }}
           transition={{
-            duration: 0.7,
+            duration: 0.8,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
             relative
             z-10
+
+            w-full
+
+            overflow-hidden
+
             rounded-3xl
+
             border
-            border-amber-300
-            bg-amber-50
+            border-amber-300/80
+
+            bg-gradient-to-b
+            from-amber-50
+            via-[#fffaf0]
+            to-[#fff7e5]
+
             px-6
-            py-8
+            pb-8
+            pt-24
+
             text-center
-            shadow-[0_12px_40px_rgba(120,70,20,0.12)]
+
+            shadow-[0_18px_50px_rgba(120,70,20,0.15)]
+
+            sm:px-8
+            sm:pb-9
+            sm:pt-28
           "
         >
-          {/* ===============================================
+          {/* =================================================
+              SUBTLE INNER LIGHT
+          ================================================= */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              rounded-3xl
+
+              bg-gradient-to-b
+              from-white/55
+              via-transparent
+              to-amber-100/20
+            "
+          />
+
+          {/* =================================================
               TOP LEFT CORNER
-          ================================================ */}
+          ================================================= */}
 
           <Image
             src="/images/decorations/corner.png"
             alt=""
             width={40}
             height={40}
-            className="absolute left-3 top-3"
+            className="
+              absolute
+              left-3
+              top-3
+              z-20
+              opacity-90
+            "
           />
 
-          {/* ===============================================
+          {/* =================================================
               TOP RIGHT CORNER
-          ================================================ */}
+          ================================================= */}
 
           <Image
             src="/images/decorations/corner.png"
             alt=""
             width={40}
             height={40}
-            className="absolute right-3 top-3 -scale-x-100"
+            className="
+              absolute
+              right-3
+              top-3
+              z-20
+              -scale-x-100
+              opacity-90
+            "
           />
 
-          {/* ===============================================
-              CONTENT
-          ================================================ */}
+          {/* =================================================
+              LEFT BAL GANESH
 
-          <p className="text-xs tracking-widest text-amber-700">
-            ॥ सप्रेम निमंत्रक ॥
-          </p>
+              IMPORTANT:
+              This is INSIDE the card.
+              overflow-hidden on card prevents it from
+              ever going outside the card boundary.
+          ================================================= */}
 
-          <h2 className="mt-3 text-2xl font-bold text-amber-900">
-            {mandalName}
-          </h2>
+          <motion.div
+            className="
+              pointer-events-none
 
-          <div className="mx-auto my-4 h-0.5 w-16 bg-amber-400" />
+              absolute
+              left-[-15px]
+              top-[8px]
 
-          <p className="leading-relaxed text-amber-800">
-            {message}
-          </p>
+              z-30
 
-          {/* ===============================================
+              h-[145px]
+              w-[110px]
+
+              sm:left-[-25px]
+              sm:top-[5px]
+              sm:h-[165px]
+              sm:w-[125px]
+
+              [perspective:1000px]
+            "
+            initial={{
+              opacity: 0,
+              x: -65,
+              scale: 0.82,
+              rotateY: 18,
+              rotateZ: -5,
+            }}
+            animate={{
+              /*
+                LEFT GANESH SEQUENCE
+
+                0   = hidden outside left edge
+                1   = enters card
+                2   = visible
+                3   = slowly leaves
+                4   = hidden
+              */
+              opacity: [0, 0, 1, 1, 0, 0],
+
+              x: [-65, -65, -8, 2, -28, -65],
+
+              y: [8, 8, 2, -2, 4, 8],
+
+              scale: [
+                0.82,
+                0.82,
+                0.97,
+                1.015,
+                0.91,
+                0.82,
+              ],
+
+              rotateY: [
+                18,
+                18,
+                5,
+                0,
+                8,
+                18,
+              ],
+
+              rotateZ: [
+                -5,
+                -5,
+                -1,
+                0,
+                -2,
+                -5,
+              ],
+            }}
+            transition={{
+              duration: 9,
+              repeat: Infinity,
+              repeatDelay: 0.8,
+
+              times: [
+                0,
+                0.08,
+                0.25,
+                0.45,
+                0.63,
+                0.76,
+              ],
+
+              ease: "easeInOut",
+            }}
+            style={{
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* Soft light behind Ganesh */}
+
+            <motion.div
+              className="
+                pointer-events-none
+
+                absolute
+                left-1/2
+                top-[20%]
+
+                h-[75%]
+                w-[80%]
+
+                -translate-x-1/2
+
+                rounded-full
+
+                bg-amber-400/20
+
+                blur-2xl
+              "
+              animate={{
+                opacity: [0.15, 0.4, 0.15],
+                scale: [0.9, 1.08, 0.9],
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+
+            <Image
+              src="/images/decorations/bal-ganesh-left.png"
+              alt=""
+              fill
+              priority
+              sizes="125px"
+              className="
+                select-none
+                object-contain
+
+                drop-shadow-[0_8px_7px_rgba(65,35,5,0.32)]
+                drop-shadow-[0_18px_18px_rgba(0,0,0,0.18)]
+              "
+            />
+          </motion.div>
+
+          {/* =================================================
+              RIGHT BAL GANESH
+
+              Starts after LEFT animation.
+          ================================================= */}
+
+          <motion.div
+            className="
+              pointer-events-none
+
+              absolute
+              right-[-12px]
+              top-[8px]
+
+              z-30
+
+              h-[145px]
+              w-[110px]
+
+              sm:right-[-25px]
+              sm:top-[5px]
+              sm:h-[165px]
+              sm:w-[125px]
+
+              [perspective:1000px]
+            "
+            initial={{
+              opacity: 0,
+              x: 65,
+              scale: 0.82,
+              rotateY: -18,
+              rotateZ: 5,
+            }}
+            animate={{
+              /*
+                RIGHT GANESH SEQUENCE
+
+                Delayed until LEFT GANESH is finished.
+              */
+
+              opacity: [
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                0,
+                0,
+              ],
+
+              x: [
+                65,
+                65,
+                65,
+                65,
+                8,
+                -2,
+                28,
+                65,
+              ],
+
+              y: [
+                8,
+                8,
+                8,
+                8,
+                2,
+                -2,
+                4,
+                8,
+              ],
+
+              scale: [
+                0.82,
+                0.82,
+                0.82,
+                0.82,
+                0.97,
+                1.015,
+                0.91,
+                0.82,
+              ],
+
+              rotateY: [
+                -18,
+                -18,
+                -18,
+                -18,
+                -5,
+                0,
+                -8,
+                -18,
+              ],
+
+              rotateZ: [
+                5,
+                5,
+                5,
+                5,
+                1,
+                0,
+                2,
+                5,
+              ],
+            }}
+            transition={{
+              duration: 9,
+              repeat: Infinity,
+              repeatDelay: 0.8,
+
+              times: [
+                0,
+                0.08,
+                0.25,
+                0.43,
+                0.52,
+                0.68,
+                0.84,
+                0.96,
+              ],
+
+              ease: "easeInOut",
+            }}
+            style={{
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* Soft light behind Ganesh */}
+
+            <motion.div
+              className="
+                pointer-events-none
+
+                absolute
+                left-1/2
+                top-[20%]
+
+                h-[75%]
+                w-[80%]
+
+                -translate-x-1/2
+
+                rounded-full
+
+                bg-amber-400/20
+
+                blur-2xl
+              "
+              animate={{
+                opacity: [0.15, 0.4, 0.15],
+                scale: [0.9, 1.08, 0.9],
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1,
+              }}
+            />
+
+            <Image
+              src="/images/decorations/bal-ganesh-right.png"
+              alt=""
+              fill
+              sizes="125px"
+              className="
+                select-none
+                object-contain
+
+                drop-shadow-[0_8px_7px_rgba(65,35,5,0.32)]
+                drop-shadow-[0_18px_18px_rgba(0,0,0,0.18)]
+              "
+            />
+          </motion.div>
+
+          {/* =================================================
+              CARD CONTENT
+          ================================================= */}
+
+          <div className="relative z-40">
+            {/* Invitation Label */}
+
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 8,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                delay: 0.25,
+                duration: 0.5,
+              }}
+              className="
+                text-xs
+                tracking-widest
+                text-amber-700
+              "
+            >
+              ॥ सप्रेम निमंत्रक ॥
+            </motion.p>
+
+            {/* Mandal Name */}
+
+            <motion.h2
+              initial={{
+                opacity: 0,
+                y: 12,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                delay: 0.35,
+                duration: 0.6,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="
+                mt-3
+                text-2xl
+                font-bold
+                text-amber-900
+
+                sm:text-3xl
+              "
+            >
+              {mandalName}
+            </motion.h2>
+
+            {/* Animated Divider */}
+
+            <motion.div
+              initial={{
+                width: 0,
+                opacity: 0,
+              }}
+              whileInView={{
+                width: 64,
+                opacity: 1,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                delay: 0.55,
+                duration: 0.6,
+                ease: "easeOut",
+              }}
+              className="
+                mx-auto
+                my-4
+                h-0.5
+
+                bg-gradient-to-r
+                from-transparent
+                via-amber-400
+                to-transparent
+              "
+            />
+
+            {/* Message */}
+
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                delay: 0.65,
+                duration: 0.6,
+              }}
+              className="
+                leading-relaxed
+                text-amber-800
+              "
+            >
+              {message}
+            </motion.p>
+          </div>
+
+          {/* =================================================
               BOTTOM LEFT CORNER
-          ================================================ */}
+          ================================================= */}
 
           <Image
             src="/images/decorations/corner.png"
             alt=""
             width={40}
             height={40}
-            className="absolute bottom-3 left-3 scale-y-[-1]"
+            className="
+              absolute
+              bottom-3
+              left-3
+              z-40
+              scale-y-[-1]
+              opacity-90
+            "
           />
 
-          {/* ===============================================
+          {/* =================================================
               BOTTOM RIGHT CORNER
-          ================================================ */}
+          ================================================= */}
 
           <Image
             src="/images/decorations/corner.png"
             alt=""
             width={40}
             height={40}
-            className="absolute bottom-3 right-3 -scale-100"
+            className="
+              absolute
+              bottom-3
+              right-3
+              z-40
+              -scale-100
+              opacity-90
+            "
           />
         </motion.div>
       </div>
@@ -224,7 +670,24 @@ export default function InvitationCard({
           BOTTOM DIVIDER
       ====================================================== */}
 
-      <div className="mt-4 flex justify-center">
+      <motion.div
+        initial={{
+          opacity: 0,
+          scaleX: 0.7,
+        }}
+        whileInView={{
+          opacity: 1,
+          scaleX: 1,
+        }}
+        viewport={{
+          once: true,
+        }}
+        transition={{
+          duration: 0.8,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="mt-6 flex justify-center"
+      >
         <Image
           src="/images/decorations/divider.png"
           alt=""
@@ -232,7 +695,7 @@ export default function InvitationCard({
           height={40}
           className="object-contain"
         />
-      </div>
+      </motion.div>
     </section>
   );
 }
