@@ -198,6 +198,18 @@ const CoconutBreak = forwardRef<
     dragY.set(0);
   }, [dragY]);
 
+  useEffect(() => {
+  if (!broken) return;
+
+  const timer = window.setTimeout(() => {
+    reset();
+  }, 3000);
+
+  return () => {
+    window.clearTimeout(timer);
+  };
+}, [broken, reset]);
+
   useImperativeHandle(
     ref,
     () => ({

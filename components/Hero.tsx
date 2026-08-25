@@ -18,6 +18,7 @@ export default function Hero({
   const [playing, setPlaying] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
+  
 
   const toggleMusic = () => {
     if (!audioRef.current) return;
@@ -334,111 +335,368 @@ export default function Hero({
         />
       </picture>
 
-      {/* =====================================================
-          TOP GARLAND
-      ====================================================== */}
+     {/* =====================================================
+    TOP CORNER GARLANDS
+====================================================== */}
 
-      <div
-        className="
-          flex
-          justify-center
-          gap-16
-          pt-4
-          sm:gap-28
-          md:gap-40
-        "
-      >
-        <motion.div
-          animate={{
-            rotate: [-6, 6, -6],
-          }}
-          transition={{
-            duration: 3.2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            transformOrigin: "top center",
-          }}
-        >
-          <Image
-            src="/images/decorations/hero-garland.png"
-            alt=""
-            width={210}
-            height={240}
-          />
-        </motion.div>
+<div
+  className="
+    pointer-events-none
+    absolute
+    inset-x-0
+    top-0
+    z-20
+    overflow-visible
+  "
+>
+  {/* ===================================================
+      LEFT CORNER
+  ==================================================== */}
 
-        <motion.div
-          animate={{
-            rotate: [6, -6, 6],
-          }}
-          transition={{
-            duration: 3.2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            transformOrigin: "top center",
-          }}
-        >
-          <Image
-            src="/images/decorations/hero-garland.png"
-            alt=""
-            width={210}
-            height={240}
-          />
-        </motion.div>
-      </div>
+  <motion.div
+    className="
+      absolute
+      left-[-25px]
+      top-0
+      w-[160px]
 
-      {/* =====================================================
-          TEXT
-      ====================================================== */}
+      sm:left-[-30px]
+      sm:w-[190px]
 
-      <div className="mt-6 px-6 text-center">
-        <p className="text-sm tracking-widest text-amber-700">
-          ॥ श्री गणेशाय नमः ॥
-        </p>
+      md:left-[-35px]
+      md:w-[220px]
 
-        <h1 className="mt-2 text-3xl font-bold text-amber-900 md:text-5xl">
-          {mandalName}
-        </h1>
+      lg:left-[-40px]
+      lg:w-[250px]
 
-        <p className="mt-2 text-amber-800">
-          {inviteLine}
-        </p>
-      </div>
+      xl:left-[-45px]
+      xl:w-[280px]
 
-      {/* =====================================================
-          FLOATING MURTI
-      ====================================================== */}
+      origin-top-left
+    "
+    animate={{
+      rotate: [-2, 1.5, -1, 2, -2],
+      x: [0, 2, -1, 2, 0],
+    }}
+    transition={{
+      duration: 6.5,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+  >
+    <Image
+      src="/images/decorations/hero-garland.png"
+      alt=""
+      width={280}
+      height={360}
+      priority
+      sizes="
+        (max-width: 639px) 160px,
+        (max-width: 767px) 190px,
+        (max-width: 1023px) 220px,
+        (max-width: 1279px) 250px,
+        280px
+      "
+      className="
+        block
+        h-auto
+        w-full
+        object-contain
+        drop-shadow-[0_12px_14px_rgba(0,0,0,0.3)]
+      "
+    />
+  </motion.div>
 
-      <motion.div
-        className="
-          relative
-          mx-auto
-          mt-6
-          w-64
-          md:w-80
-        "
-        animate={{
-          y: [0, -14, 0],
-        }}
-        transition={{
-          duration: 4.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        <Image
-          src="/images/ganapati/ganapati-murti.png"
-          alt="Ganapati murti"
-          width={400}
-          height={480}
-          className="drop-shadow-2xl"
-          priority
-        />
-      </motion.div>
+
+  {/* ===================================================
+      RIGHT CORNER
+  ==================================================== */}
+
+  <motion.div
+    className="
+      absolute
+      right-[-25px]
+      top-0
+      w-[160px]
+
+      sm:right-[-30px]
+      sm:w-[190px]
+
+      md:right-[-35px]
+      md:w-[220px]
+
+      lg:right-[-40px]
+      lg:w-[250px]
+
+      xl:right-[-45px]
+      xl:w-[280px]
+
+      origin-top-right
+    "
+    animate={{
+      rotate: [2, -1.5, 1, -2, 2],
+      x: [0, -2, 1, -2, 0],
+    }}
+    transition={{
+      duration: 7.2,
+      repeat: Infinity,
+      ease: "easeInOut",
+      delay: 0.4,
+    }}
+  >
+    <Image
+      src="/images/decorations/hero-garland.png"
+      alt=""
+      width={280}
+      height={360}
+      priority
+      sizes="
+        (max-width: 639px) 160px,
+        (max-width: 767px) 190px,
+        (max-width: 1023px) 220px,
+        (max-width: 1279px) 250px,
+        280px
+      "
+      className="
+        block
+        h-auto
+        w-full
+        object-contain
+        -scale-x-100
+        drop-shadow-[0_12px_14px_rgba(0,0,0,0.3)]
+      "
+    />
+  </motion.div>
+</div>
+
+
+     {/* =====================================================
+    MAIN HERO CONTENT
+    TEXT + MURTI + COCONUT
+====================================================== */}
+
+<div
+  className="
+    relative
+    z-10
+    mx-auto
+    flex
+    w-full
+    max-w-3xl
+    flex-col
+    items-center
+    text-center
+
+    mt-25
+
+    sm:mt-5
+
+    md:mt-50
+
+    lg:mt-70
+  "
+>
+  {/* ===================================================
+      TEXT
+  ==================================================== */}
+
+  <div
+    className="
+      w-full
+      px-5
+      sm:px-6
+    "
+  >
+    {/* श्री गणेशाय नमः */}
+
+    <p
+      className="
+        text-xs
+        font-medium
+        tracking-[0.18em]
+        text-amber-700
+
+        sm:text-sm
+        sm:tracking-[0.22em]
+      "
+    >
+      ॥ श्री गणेशाय नमः ॥
+    </p>
+
+
+    {/* MANDAL NAME */}
+
+    <h1
+      className="
+        mt-2
+        text-3xl
+        font-bold
+        leading-[1.2]
+        text-amber-900
+
+        sm:text-4xl
+
+        md:mt-3
+        md:text-5xl
+
+        lg:text-6xl
+      "
+    >
+      {mandalName}
+    </h1>
+
+
+    {/* DIVIDER */}
+
+    <div
+      className="
+        mx-auto
+        mt-3
+        h-[2px]
+        w-12
+        rounded-full
+        bg-amber-400/80
+
+        sm:mt-4
+        sm:w-16
+      "
+    />
+
+
+    {/* INVITATION */}
+
+    <p
+      className="
+        mx-auto
+        mt-3
+        max-w-md
+        text-sm
+        font-normal
+        leading-relaxed
+        text-amber-800
+
+        sm:mt-4
+        sm:text-base
+
+        md:max-w-xl
+        md:text-lg
+      "
+    >
+      {inviteLine}
+    </p>
+  </div>
+
+
+  {/* ===================================================
+      GANAPATI MURTI
+  ==================================================== */}
+
+  <motion.div
+    className="
+      relative
+      mt-3
+      w-[240px]
+
+      sm:mt-4
+      sm:w-[260px]
+
+      md:mt-5
+      md:w-[310px]
+
+      lg:mt-6
+      lg:w-[340px]
+    "
+    animate={{
+      y: [0, -10, 0],
+    }}
+    transition={{
+      duration: 4.8,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+  >
+    <Image
+      src="/images/ganapati/ganapati-murti.png"
+      alt="Ganapati murti"
+      width={400}
+      height={480}
+      priority
+      sizes="
+        (max-width: 639px) 240px,
+        (max-width: 767px) 260px,
+        (max-width: 1023px) 310px,
+        340px
+      "
+      className="
+        block
+        h-auto
+        w-full
+        object-contain
+        drop-shadow-[0_18px_22px_rgba(0,0,0,0.28)]
+      "
+    />
+  </motion.div>
+
+
+  {/* ===================================================
+      COCONUT BREAK
+  ==================================================== */}
+
+  <div
+    className="
+      relative
+      z-20
+      mt-1
+      flex
+      flex-col
+      items-center
+      justify-center
+
+      sm:mt-2
+
+      md:mt-3
+    "
+  >
+    <CoconutBreak
+      size={105}
+      upwardDistance={55}
+      downwardDistance={45}
+    />
+
+    <motion.p
+      initial={{
+        opacity: 0,
+        y: 8,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+      }}
+      transition={{
+        duration: 0.6,
+        delay: 0.2,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="
+        -mt-1
+        max-w-[230px]
+        text-center
+        text-xs
+        font-medium
+        leading-relaxed
+        text-amber-800/90
+
+        sm:text-sm
+      "
+    >
+      नारळ धरून वर उचला आणि परत खाली आणून फोडा 🥥
+    </motion.p>
+  </div>
+</div>
+
 
       {/* =====================================================
           MUSIC
