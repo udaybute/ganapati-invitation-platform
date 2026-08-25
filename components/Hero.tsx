@@ -362,10 +362,10 @@ export default function Hero({
           }}
         >
           <Image
-            src="/images/decorations/flower-garland-left.webp"
+            src="/images/decorations/hero-garland.png"
             alt=""
-            width={110}
-            height={140}
+            width={210}
+            height={240}
           />
         </motion.div>
 
@@ -383,10 +383,10 @@ export default function Hero({
           }}
         >
           <Image
-            src="/images/decorations/flower-garland-right.webp"
+            src="/images/decorations/hero-garland.png"
             alt=""
-            width={110}
-            height={140}
+            width={210}
+            height={240}
           />
         </motion.div>
       </div>
