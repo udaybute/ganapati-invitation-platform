@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { razorpay } from "@/lib/razorpay";
+import { getRazorpay } from "@/lib/razorpay";
 
 export async function POST(request: Request) {
+  const razorpay = getRazorpay();
   const { slug } = await request.json();
   if (!slug) return NextResponse.json({ error: "slug required" }, { status: 400 });
 
