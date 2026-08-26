@@ -15,7 +15,7 @@ export default async function ThankYouPage({
         className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-amber-50"
         style={{
           backgroundImage:
-            "url('/images/submitform-bg.png')",
+            "url('/images/backgrounds/submitform-bg.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
