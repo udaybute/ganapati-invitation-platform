@@ -9,13 +9,31 @@ import {
 } from "@/lib/admin-actions";
 
 import AdminThemeToggle from "@/components/admin/AdminThemeToggle";
+import DeleteButton from "@/components/admin/DeleteButton";
+import UnapproveButton from "@/components/admin/UnapproveButton";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
 
-export default async function AdminPage() {
+// Accepts either a full invitation URL or a bare slug and returns just the slug —
+// so the search box works whether the admin pastes "https://site.com/jay-ganesj" or just "jay-ganesj".
+function extractSlug(input: string): string {
+  const trimmed = input.trim();
+  try {
+    const url = new URL(trimmed);
+    return url.pathname.replace(/^\/+/, "").split("/")[0];
+  } catch {
+    return trimmed.replace(/^\/+/, "");
+  }
+}
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const loggedIn = await isAdmin();
 
   /*
@@ -127,7 +145,7 @@ export default async function AdminPage() {
     await supabaseAdmin
       .from("mandals")
       .select(
-        "id, slug, mandal_name, created_at"
+        "id, slug, mandal_name, created_at, edit_token"
       )
       .eq("status", "approved")
       .order("created_at", {
@@ -137,6 +155,53 @@ export default async function AdminPage() {
 
   const queryError =
     pendingError || approvedError;
+
+  /*
+  ============================================================
+  REVENUE
+  ============================================================
+  */
+
+  const { data: paidMandals } = await supabaseAdmin
+    .from("mandals")
+    .select("amount, created_at")
+    .eq("payment_status", "paid");
+
+  const totalRevenue = (paidMandals ?? []).reduce((sum, m) => sum + (m.amount ?? 0), 0);
+  const paidCount = paidMandals?.length ?? 0;
+
+  const now = new Date();
+  const thisMonthRevenue = (paidMandals ?? [])
+    .filter((m) => {
+      const d = new Date(m.created_at as string);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    })
+    .reduce((sum, m) => sum + (m.amount ?? 0), 0);
+
+  const unpaidPendingCount = (pending ?? []).filter((m) => m.payment_status !== "paid").length;
+  const potentialRevenue = unpaidPendingCount * 499;
+
+  /*
+  ============================================================
+  SEARCH
+  ============================================================
+  */
+
+  const { q } = await searchParams;
+  const query = q ?? "";
+  let searchResult: any = null;
+  let searchNotFound = false;
+
+  if (query.trim()) {
+    const slugCandidate = extractSlug(query);
+    const { data } = await supabaseAdmin
+      .from("mandals")
+      .select("*")
+      .eq("slug", slugCandidate)
+      .maybeSingle();
+    if (data) searchResult = data;
+    else searchNotFound = true;
+  }
 
   /*
   ============================================================
@@ -212,6 +277,154 @@ export default async function AdminPage() {
           </div>
 
         </header>
+
+        {/* ==================================================
+            SEARCH
+        ================================================== */}
+
+        <form
+          action="/admin"
+          method="GET"
+          style={{ display: "flex", gap: 10, marginBottom: 28, flexWrap: "wrap" }}
+        >
+          <input
+            type="text"
+            name="q"
+            defaultValue={query}
+            placeholder="Client ka invitation link ya slug paste karo (उदा. jay-ganesj)"
+            style={{
+              flex: "1 1 260px",
+              padding: "13px 18px",
+              borderRadius: 999,
+              border: "1px solid rgba(120,90,30,0.25)",
+              fontSize: 14,
+              background: "rgba(255,255,255,0.6)",
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: "13px 26px",
+              borderRadius: 999,
+              background: "#111827",
+              color: "#fff",
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+              fontSize: 14,
+            }}
+          >
+            Search
+          </button>
+        </form>
+
+        {query.trim() && (
+          <section style={{ marginBottom: 32 }}>
+            {searchResult ? (
+              <article className="submission-card">
+                <div className="submission-header">
+                  <div className="submission-main">
+                    <div className="mandal-avatar">
+                      {searchResult.mandal_name?.charAt(0)?.toUpperCase() || "G"}
+                    </div>
+                    <div>
+                      <h3 className="mandal-name">{searchResult.mandal_name}</h3>
+                      <p className="mandal-slug">/{searchResult.slug}</p>
+                    </div>
+                  </div>
+                  <span className="pending-badge" style={{ textTransform: "capitalize" }}>
+                    {searchResult.status}
+                  </span>
+                </div>
+
+                <div style={{ padding: "0 20px 16px", fontSize: 13, lineHeight: 1.8, opacity: 0.85 }}>
+                  <p>📞 {searchResult.contact}</p>
+                  <p>📍 {searchResult.address}</p>
+                  <p>
+                    💳 Payment: {searchResult.payment_status}
+                    {searchResult.payment_status === "paid" ? ` (₹${searchResult.amount})` : ""}
+                  </p>
+                  <p>
+                    📅 Submitted:{" "}
+                    {new Date(searchResult.created_at).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+
+                <div className="submission-actions">
+                  <div className="action-buttons" style={{ flexWrap: "wrap" }}>
+                    {searchResult.status !== "approved" && (
+                      <form
+                        action={async () => {
+                          "use server";
+                          await approveMandal(searchResult.id);
+                        }}
+                      >
+                        <button type="submit" className="approve-button">
+                          <span>✓</span>
+                          Approve & Publish
+                        </button>
+                      </form>
+                    )}
+
+                    {searchResult.status === "approved" && (
+                      <UnapproveButton id={searchResult.id} />
+                    )}
+
+                    {searchResult.status !== "rejected" && (
+                      <form
+                        action={async () => {
+                          "use server";
+                          await rejectMandal(searchResult.id);
+                        }}
+                      >
+                        <button type="submit" className="reject-button">
+                          <span>×</span>
+                          Reject
+                        </button>
+                      </form>
+                    )}
+
+                    <a
+                      href={`/edit/${searchResult.edit_token}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="approve-button"
+                      style={{ background: "#2563eb", textDecoration: "none", display: "inline-flex" }}
+                    >
+                      <span>✎</span>
+                      Edit
+                    </a>
+
+                    {searchResult.status === "approved" && (
+                      <a
+                        href={`/${searchResult.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="approve-button"
+                        style={{ background: "#059669", textDecoration: "none", display: "inline-flex" }}
+                      >
+                        <span>↗</span>
+                        View Live
+                      </a>
+                    )}
+
+                    <DeleteButton id={searchResult.id} label="Delete" />
+                  </div>
+                </div>
+              </article>
+            ) : searchNotFound ? (
+              <div className="empty-state">
+                <div className="empty-icon">?</div>
+                <h3>Koi match nahi mila</h3>
+                <p>Slug ya link check karke dobara try karo.</p>
+              </div>
+            ) : null}
+          </section>
+        )}
 
         {/* ==================================================
             ERROR
@@ -323,11 +536,79 @@ export default async function AdminPage() {
 
           </div>
 
-        </section>
+          <div className="stat-card">
 
-        {/* ==================================================
-            PENDING SUBMISSIONS
-        ================================================== */}
+            <div className="stat-top">
+
+              <span className="stat-label">
+                Total Revenue
+              </span>
+
+              <span className="stat-icon approved-icon">
+                ₹
+              </span>
+
+            </div>
+
+            <p className="stat-value">
+              ₹{totalRevenue.toLocaleString("en-IN")}
+            </p>
+
+            <p className="stat-description">
+              From {paidCount} paid client{paidCount === 1 ? "" : "s"}
+            </p>
+
+          </div>
+
+          <div className="stat-card">
+
+            <div className="stat-top">
+
+              <span className="stat-label">
+                This Month
+              </span>
+
+              <span className="stat-icon platform-icon">
+                📈
+              </span>
+
+            </div>
+
+            <p className="stat-value">
+              ₹{thisMonthRevenue.toLocaleString("en-IN")}
+            </p>
+
+            <p className="stat-description">
+              Revenue this calendar month
+            </p>
+
+          </div>
+
+          <div className="stat-card">
+
+            <div className="stat-top">
+
+              <span className="stat-label">
+                Potential Revenue
+              </span>
+
+              <span className="stat-icon pending-icon">
+                ⏳
+              </span>
+
+            </div>
+
+            <p className="stat-value">
+              ₹{potentialRevenue.toLocaleString("en-IN")}
+            </p>
+
+            <p className="stat-description">
+              {unpaidPendingCount} unpaid submission{unpaidPendingCount === 1 ? "" : "s"} waiting
+            </p>
+
+          </div>
+
+        </section>
 
         <section className="dashboard-section">
 
@@ -594,6 +875,19 @@ export default async function AdminPage() {
                         </button>
                       </form>
 
+                      <a
+                        href={`/edit/${m.edit_token}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="approve-button"
+                        style={{ background: "#2563eb", textDecoration: "none", display: "inline-flex" }}
+                      >
+                        <span>✎</span>
+                        Edit
+                      </a>
+
+                      <DeleteButton id={m.id} label="Delete" />
+
                       <form
                         action={async () => {
                           "use server";
@@ -654,16 +948,20 @@ export default async function AdminPage() {
 
           <div className="approved-list">
 
-            {approved?.map((m) => (
-              <a
+            {approved?.map((m: any) => (
+              <div
                 key={m.id}
-                href={`/${m.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="approved-item"
+                style={{ cursor: "default" }}
               >
 
-                <div className="approved-left">
+                <a
+                  href={`/${m.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="approved-left"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
 
                   <div className="approved-avatar">
                     {m.mandal_name
@@ -683,21 +981,44 @@ export default async function AdminPage() {
 
                   </div>
 
-                </div>
+                </a>
 
-                <div className="approved-right">
+                <div className="approved-right" style={{ gap: 8 }}>
 
                   <span className="live-badge">
                     LIVE
                   </span>
 
-                  <span className="open-arrow">
+                  <a
+                    href={`/edit/${m.edit_token}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Edit"
+                    style={{
+                      textDecoration: "none",
+                      color: "#2563eb",
+                      fontSize: 15,
+                    }}
+                  >
+                    ✎
+                  </a>
+
+                  <UnapproveButton id={m.id} />
+
+                  <DeleteButton id={m.id} label="🗑" />
+
+                  <a
+                    href={`/${m.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="open-arrow"
+                  >
                     ↗
-                  </span>
+                  </a>
 
                 </div>
 
-              </a>
+              </div>
             ))}
 
             {approved?.length === 0 && (

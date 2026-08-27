@@ -196,6 +196,7 @@ export default function SubmitForm() {
 
     try {
       const slug = await getUniqueSlug(mandalName);
+      const editToken = crypto.randomUUID(); // cryptographically secure — 122-bit random, unguessable // cryptographically secure — 122-bit random, unguessable
 
       setProgress("Photos upload ho rahi hain...");
 
@@ -232,6 +233,7 @@ export default function SubmitForm() {
         .from("mandals")
         .insert({
           slug,
+          edit_token: editToken,
           mandal_name: mandalName,
           language,
           invite_message: inviteMessage,
@@ -247,7 +249,7 @@ export default function SubmitForm() {
 
       if (insertError) throw insertError;
 
-      router.push(`/submit/thank-you?slug=${slug}`);
+            router.push(`/submit/thank-you?slug=${slug}&editToken=${editToken}`);
     } catch (e: any) {
       setError(
         e.message || "Kuch galat ho gaya, dobara try karo."
