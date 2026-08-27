@@ -4,6 +4,43 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+
+const invitationUrl =
+  "https://ganapati-invitation-platform.vercel.app/mandal-zw5m9l";
+
+const platformUrl =
+  "https://ganapati-invitation-platform.vercel.app/";
+
+const whatsappMessage = `🧡 गणपती निमंत्रणासाठी Instagram Caption
+
+🙏 यंदाच्या गणेशोत्सवाचे निमंत्रण आता डिजिटल करा! 🐘✨
+
+तुमच्या गणपती मंडळाचे सुंदर, आकर्षक आणि आधुनिक Digital Invitation तयार करा आणि एका क्लिकमध्ये WhatsApp वर आपल्या नातेवाईक, मित्रपरिवार आणि भक्तांना पाठवा! ❤️
+
+✨ मंडळाची संपूर्ण माहिती
+
+📸 गणपती बाप्पांचे फोटो
+
+🗓️ कार्यक्रमांची माहिती
+
+🙏 आरती • महाप्रसाद • मिरवणूक • विसर्जन
+
+📍 मंडळाचे लोकेशन
+
+📱 WhatsApp वर सहज शेअर करता येणारी लिंक
+
+कागदी पत्रिका नको… यंदा बाप्पांचे निमंत्रण Digital करा! 🚩
+
+👉 तुमच्या मंडळासाठी आजच Digital Invitation तयार करा.
+
+${platformUrl}
+
+गणपती बाप्पा मोरया! ❤️🚩`;
+
+const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(
+  whatsappMessage
+)}`;
+
 const typingText =
   "एक सुंदर, animated आणि share करण्यायोग्य Ganpati invitation website — फक्त ₹499 मध्ये.";
 
@@ -189,6 +226,135 @@ export default function HomePage() {
         </div>
 
         {/* =================================================
+    DIGITAL INVITATION LINK
+================================================= */}
+
+<div className="mt-5 w-full max-w-[420px] animate-fade-up-delay-3 sm:mt-6">
+  <a
+    href={invitationUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-[var(--color-gold)]/35 bg-black/20 px-5 py-3.5 text-sm font-semibold text-[var(--color-gold-light)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-gold)]/60 hover:bg-black/30 sm:text-base"
+  >
+    <span className="text-lg">🪔</span>
+
+    <span className="min-w-0 break-words text-center">
+      Digital Invitation चे उदाहरण पहा
+    </span>
+
+    <span className="shrink-0 transition-transform duration-300 group-hover:translate-x-1">
+      →
+    </span>
+  </a>
+</div>
+
+{/* =================================================
+    MARATHI INFORMATION
+================================================= */}
+
+<section className="mt-12 w-full max-w-2xl animate-fade-in sm:mt-14">
+  <div className="rounded-[28px] border border-[var(--color-gold)]/20 bg-black/15 p-5 text-left backdrop-blur-md sm:p-7 md:p-8">
+
+    {/* Heading */}
+    <div className="mb-5 text-center sm:mb-6">
+      <span className="text-xl">🙏</span>
+
+      <h2 className="mt-2 text-xl font-bold leading-relaxed text-[var(--color-gold-light)] sm:text-2xl md:text-3xl">
+        मंडळासाठीच नाही,
+        <br className="sm:hidden" />
+        घरगुती गणपतीसाठीही!
+      </h2>
+
+      <div className="mx-auto mt-3 h-px w-16 bg-[var(--color-gold)]/50" />
+    </div>
+
+    {/* Content */}
+    <div className="space-y-4 text-sm leading-7 text-[var(--color-ivory)]/80 sm:text-base sm:leading-8">
+
+      <p>
+        हे डिजिटल निमंत्रण फक्त गणपती मंडळासाठीच नाही,
+        तर तुम्ही तुमच्या <strong className="font-semibold text-[var(--color-gold-light)]">
+          घरगुती गणपतीसाठीही
+        </strong>{" "}
+        तयार करू शकता! 🙏🌺
+      </p>
+
+      <p>
+        तुमच्या घरगुती गणपतीच्या{" "}
+        <strong className="font-semibold text-[var(--color-gold-light)]">
+          निमंत्रणाची माहिती
+        </strong>{" "}
+        भरून हे सुंदर डिजिटल निमंत्रण तुमचे{" "}
+        <strong className="font-semibold text-[var(--color-gold-light)]">
+          नातेवाईक, मित्रपरिवार आणि पाहुण्यांना
+        </strong>{" "}
+        सहज पाठवू शकता.
+      </p>
+
+      <p>
+        तुमच्याकडे मागील वर्षीच्या गणपतीचे सुंदर फोटो असतील,
+        तर तेही फॉर्ममध्ये जोडा. 📸✨
+      </p>
+
+      {/* Highlight */}
+      <div className="my-5 rounded-2xl border border-[var(--color-gold)]/20 bg-[var(--color-gold)]/5 p-4 text-center sm:p-5">
+        <p className="text-sm font-semibold leading-7 text-[var(--color-gold-light)] sm:text-base sm:leading-8">
+          आणि खास गोष्ट म्हणजे —
+          <br />
+          सुंदर, आकर्षक आणि मनमोहक डिजिटल गणपती निमंत्रण
+          <br className="hidden sm:block" />
+          <span className="text-lg sm:text-xl">
+            अवघ्या ५ मिनिटांत तयार होईल! 🪔❤️
+          </span>
+        </p>
+      </div>
+
+      <p>
+        तुमच्या{" "}
+        <strong className="font-semibold text-[var(--color-gold-light)]">
+          WhatsApp ग्रुपमध्येही ही लिंक नक्की शेअर करा
+        </strong>
+        , जेणेकरून तुमच्या मित्रपरिवारातील आणि नातेवाईकांनाही
+        त्यांच्या घरगुती गणपतीसाठी असे सुंदर डिजिटल निमंत्रण
+        तयार करता येईल.
+      </p>
+
+      <div className="pt-2 text-center">
+        <p className="text-base font-bold text-[var(--color-gold-light)] sm:text-lg">
+          गणपती बाप्पा मोरया! ❤️🙏
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{/* =================================================
+    WHATSAPP SHARE
+================================================= */}
+
+<div className="mt-6 w-full max-w-2xl sm:mt-7">
+  <a
+    href={whatsappShareUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-5 py-4 text-center text-sm font-bold text-white shadow-[0_10px_35px_rgba(37,211,102,0.18)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_45px_rgba(37,211,102,0.28)] active:scale-[0.98] sm:px-7 sm:py-4.5 sm:text-base"
+  >
+
+    <span className="min-w-0 break-words leading-6">
+      WhatsApp वर मंडळ आणि मित्रांना शेअर करा
+    </span>
+
+    <span className="shrink-0 text-lg transition-transform duration-300 group-hover:translate-x-1">
+      →
+    </span>
+  </a>
+
+  <p className="mt-2 px-4 text-center text-[10px] leading-5 text-[var(--color-ivory)]/45 sm:text-xs">
+    तुमच्या मित्रपरिवाराला आणि नातेवाईकांना ही माहिती शेअर करा ❤️
+  </p>
+</div>
+        {/* =================================================
             FEATURES
         ================================================== */}
 
@@ -196,15 +362,15 @@ export default function HomePage() {
           {/* Feature 1 */}
           <Feature
             icon="🎬"
-            title="Animated"
-            subtitle="Dwar"
+            title="सुंदर"
+            subtitle="Animation"
             delay="0s"
           />
 
           {/* Feature 2 */}
           <Feature
             icon="📸"
-            title="Photo"
+            title="फोटो"
             subtitle="Gallery"
             delay="0.15s"
           />
@@ -212,8 +378,8 @@ export default function HomePage() {
           {/* Feature 3 */}
           <Feature
             icon="📲"
-            title="WhatsApp"
-            subtitle="Ready"
+            title="सहज"
+            subtitle="WhatsApp Share"
             delay="0.3s"
           />
         </div>
