@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase-client";
 import { getUniqueSlug } from "@/lib/slug";
 import { uploadPhotos } from "@/lib/photo-upload";
+import { track } from "@vercel/analytics";
 
 type TimelineDraft = {
   id: string;
@@ -182,15 +183,15 @@ export default function SubmitForm() {
     contact.trim() &&
     address.trim();
 
-  const validateStep3 = () => gallery.length >= 6;
+  const validateStep3 = () => gallery.length >= 1;
 
   const handleSubmit = async () => {
     setError("");
 
-    if (gallery.length < 6) {
-      setError("Kam se kam 6 photos chahiye.");
-      return;
-    }
+   if (gallery.length < 1) {
+  setError("Kam se kam 1 photo chahiye.");
+  return;
+}
 
     setSubmitting(true);
 
@@ -249,7 +250,8 @@ export default function SubmitForm() {
 
       if (insertError) throw insertError;
 
-            router.push(`/submit/thank-you?slug=${slug}&editToken=${editToken}`);
+            track("form_submitted");
+      router.push(`/submit/thank-you?slug=${slug}&editToken=${editToken}`);
     } catch (e: any) {
       setError(
         e.message || "Kuch galat ho gaya, dobara try karo."
@@ -528,11 +530,14 @@ export default function SubmitForm() {
                     />
                   </Field>
 
-                  <NextButton
-                    onClick={() =>
-                      validateStep1() && setStep(2)
-                    }
-                  />
+                 <NextButton
+  onClick={() => {
+    if (validateStep1()) {
+      track("form_step1_complete");
+      setStep(2);
+    }
+  }}
+/>
 
                 </div>
               </div>
@@ -708,9 +713,12 @@ export default function SubmitForm() {
                       onClick={() => setStep(1)}
                     />
 
-                    <NextButton
-                      onClick={() => setStep(3)}
-                    />
+                   <NextButton
+  onClick={() => {
+    track("form_step2_complete");
+    setStep(3);
+  }}
+/>
                   </div>
 
                 </div>

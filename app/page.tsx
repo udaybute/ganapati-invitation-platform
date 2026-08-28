@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import { track } from "@vercel/analytics";
 
 const invitationUrl =
   "https://ganapati-invitation-platform.vercel.app/mandal-zw5m9l";
@@ -205,8 +204,9 @@ export default function HomePage() {
         ================================================== */}
 
         <div className="mt-6 animate-fade-up-delay-3 sm:mt-7">
-          <Link
+          <a
             href="/submit"
+            onClick={() => track("landing_cta_click")}
             className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[var(--color-gold)] px-8 py-3.5 text-base font-bold text-[var(--color-maroon-dark)] shadow-[0_10px_35px_rgba(212,160,23,0.25)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:bg-[var(--color-gold-light)] hover:shadow-[0_15px_45px_rgba(212,160,23,0.4)] active:scale-95 sm:px-10 sm:py-4 sm:text-lg"
           >
             <span className="absolute inset-0 -translate-x-full bg-white/25 transition-transform duration-700 group-hover:translate-x-full" />
@@ -218,7 +218,7 @@ export default function HomePage() {
                 →
               </span>
             </span>
-          </Link>
+          </a>
 
           <p className="mt-2 text-[10px] text-[var(--color-ivory)]/50">
             काही मिनिटांत तुमचे digital invitation तयार
@@ -234,12 +234,13 @@ export default function HomePage() {
     href={invitationUrl}
     target="_blank"
     rel="noopener noreferrer"
+    onClick={() => track("live_demo_click")}
     className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-[var(--color-gold)]/35 bg-black/20 px-5 py-3.5 text-sm font-semibold text-[var(--color-gold-light)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-gold)]/60 hover:bg-black/30 sm:text-base"
   >
-    <span className="text-lg">🪔</span>
+   
 
     <span className="min-w-0 break-words text-center">
-      Digital Invitation चे उदाहरण पहा
+      Live Demo पहा
     </span>
 
     <span className="shrink-0 transition-transform duration-300 group-hover:translate-x-1">
@@ -338,6 +339,7 @@ export default function HomePage() {
     href={whatsappShareUrl}
     target="_blank"
     rel="noopener noreferrer"
+    onClick={() => track("whatsapp_share_click")}
     className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-5 py-4 text-center text-sm font-bold text-white shadow-[0_10px_35px_rgba(37,211,102,0.18)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_45px_rgba(37,211,102,0.28)] active:scale-[0.98] sm:px-7 sm:py-4.5 sm:text-base"
   >
 

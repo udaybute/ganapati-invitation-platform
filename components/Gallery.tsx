@@ -241,30 +241,32 @@ function MobileShowcase({
           </motion.div>
         </AnimatePresence>
 
-        {/* PHOTO COUNTER */}
+        {/* PHOTO COUNTER — only meaningful when there's more than one photo */}
 
-        <div
-          className="
-            absolute
-            left-2
-            top-2
-            z-10
+        {photos.length > 1 && (
+          <div
+            className="
+              absolute
+              left-2
+              top-2
+              z-10
 
-            rounded-full
-            bg-black/50
+              rounded-full
+              bg-black/50
 
-            px-2
-            py-0.5
+              px-2
+              py-0.5
 
-            text-[10px]
-            text-amber-100
+              text-[10px]
+              text-amber-100
 
-            backdrop-blur-sm
-          "
-        >
-          {String(active + 1).padStart(2, "0")} /{" "}
-          {String(photos.length).padStart(2, "0")}
-        </div>
+              backdrop-blur-sm
+            "
+          >
+            {String(active + 1).padStart(2, "0")} /{" "}
+            {String(photos.length).padStart(2, "0")}
+          </div>
+        )}
 
         {/* CAPTION */}
 
@@ -306,7 +308,13 @@ function MobileShowcase({
 /* ============================================================
    DESKTOP SHOWCASE
 
-   3 x 3 grid.
+   Adapts to how many photos exist:
+   - 1 photo   → single large frame, no grid, no marquee
+   - 2-4 photos → a grid sized exactly to the count, nothing rotates
+                  (all photos already visible at once, so a thumbnail
+                  strip would have nothing useful to select between)
+   - 5+ photos → the original 3x3 grid that rotates through everything,
+                  with the marquee strip for jumping to any photo
 ============================================================ */
 
 function DesktopShowcase({
@@ -316,9 +324,10 @@ function DesktopShowcase({
 }) {
   const cells = 9;
   const [offset, setOffset] = useState(0);
+  const isDense = photos.length >= 5;
 
   useEffect(() => {
-    if (photos.length <= cells) return;
+    if (!isDense || photos.length <= cells) return;
 
     const id = window.setInterval(() => {
       setOffset(
@@ -329,7 +338,75 @@ function DesktopShowcase({
     return () => {
       window.clearInterval(id);
     };
-  }, [photos.length]);
+  }, [photos.length, isDense]);
+
+  /* ---------- 1 photo: single frame ---------- */
+
+  if (photos.length === 1) {
+    const photo = photos[0];
+    return (
+      <div className="flex h-full w-full flex-col gap-3 px-2 py-1">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          className="relative min-h-0 flex-1 overflow-hidden rounded-xl"
+        >
+          <Image
+            src={photo.url}
+            alt={photo.caption ?? ""}
+            fill
+            unoptimized
+            sizes="(min-width: 768px) 60vw, 100vw"
+            className="object-cover"
+          />
+          {photo.caption && (
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-3 text-left">
+              <p className="text-sm font-medium text-amber-100">
+                {photo.caption}
+              </p>
+            </div>
+          )}
+        </motion.div>
+      </div>
+    );
+  }
+
+  /* ---------- 2-4 photos: grid sized to fit, no empty cells ---------- */
+
+  if (!isDense) {
+    const cols =
+      photos.length === 2
+        ? "grid-cols-2"
+        : "grid-cols-2 sm:grid-cols-3";
+
+    return (
+      <div className="flex h-full w-full flex-col gap-3 px-2 py-1">
+        <div className={`grid min-h-0 flex-1 ${cols} gap-2`}>
+          {photos.map((photo, index) => (
+            <motion.div
+              key={`${photo.url}-${index}`}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: index * 0.05, ease: "easeInOut" }}
+              className="relative overflow-hidden rounded-lg"
+            >
+              <Image
+                src={photo.url}
+                alt={photo.caption ?? ""}
+                fill
+                unoptimized
+                sizes="(min-width: 768px) 33vw, 50vw"
+                className="object-cover"
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------- 5+ photos: original rotating 3x3 grid ---------- */
 
   const shown = Array.from({
     length: Math.min(cells, photos.length),
