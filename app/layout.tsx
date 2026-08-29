@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { Yatra_One, Mukta } from "next/font/google";
+import { Rozha_One, Mukta } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const yatraOne = Yatra_One({
+const rozhaOne = Rozha_One({
   weight: "400",
-  subsets: ["latin"],
+  subsets: ["devanagari", "latin"],
   variable: "--font-display",
+  display: "swap",
 });
 
 const mukta = Mukta({
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin", "devanagari"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["devanagari", "latin"],
   variable: "--font-body",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="mr">
-      <body className={`${yatraOne.variable} ${mukta.variable} font-sans antialiased`}>
+      <body className={`${rozhaOne.variable} ${mukta.variable} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>

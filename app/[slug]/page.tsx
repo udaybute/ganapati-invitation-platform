@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase-client";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import PaymentButton from "@/components/PaymentButton";
+import { FestiveAudioAndBlessing } from "@/components/FestiveAudioAndBlessing";
 
 // Generates a unique WhatsApp/social share preview per client — same slug pattern as the page below
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -98,6 +99,7 @@ export default async function InvitationPage({ params }: { params: Promise<{ slu
       <Blessings />
       <Gallery photos={client.galleryPhotos} />
       <Footer mandalName={client.mandalName} contact={client.contact} address={client.address} instagramUrl={client.instagramUrl} slug={slug} />
+      <FestiveAudioAndBlessing />
     </main>
   );
 }
