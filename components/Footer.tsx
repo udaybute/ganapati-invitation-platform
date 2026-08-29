@@ -1,10 +1,12 @@
 import Image from "next/image";
+import PersonalizedInviteWidget from "@/components/PersonalizedInviteWidget";
 
 type FooterProps = {
   mandalName: string;
   contact: string;
   address: string;
   instagramUrl?: string;
+  slug?: string; // when present (the live page), shows the "send personalized invite" widget
 };
 
 export default function Footer({
@@ -12,6 +14,7 @@ export default function Footer({
   contact,
   address,
   instagramUrl,
+  slug,
 }: FooterProps) {
   return (
     <footer className="relative overflow-hidden px-6 py-12 text-center">
@@ -64,8 +67,11 @@ export default function Footer({
           भक्ती, श्रद्धा आणि एकतेचा उत्सव
         </p>
 
-        {/* Contact / Address */}
+        {/* Contact / Address / Personalized Invite */}
         <div className="mx-auto mt-6 flex max-w-xs flex-col gap-3">
+          {/* Personalized WhatsApp Invite — only on the live page (needs a real slug) */}
+          {slug && <PersonalizedInviteWidget mandalName={mandalName} slug={slug} />}
+
           {/* Contact */}
           <div
             className="
