@@ -61,10 +61,10 @@ export default function HomePage() {
       <picture className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <source
           media="(min-width: 768px)"
-          srcSet="/images/backgrounds/hero-background-desktop.webp"
+          srcSet="/images/backgrounds/hero-background3.webp"
         />
         <Image
-          src="/images/backgrounds/hero-background-mobile.webp"
+          src="/images/backgrounds/hero-background3.webp"
           alt="Festive Background"
           fill
           priority
