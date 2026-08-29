@@ -384,7 +384,7 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Festive Digital Aarti Audio, Temple Bell & Floral Blessing (पुष्पार्पण) */}
+      {/* Festive Digital Aarti Audio, Temple Bell & Floral Blessing(पुष्पार्पण) */}
       <FestiveAudioAndBlessing />
 
     </main>
