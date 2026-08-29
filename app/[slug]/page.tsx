@@ -8,7 +8,8 @@ import Location from "@/components/Location";
 import Gallery from "@/components/Gallery";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase-client";
-import ScrollReveal from "@/components/animations/ScrollReveal";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import PaymentButton from "@/components/PaymentButton";
 
 // Generates a unique WhatsApp/social share preview per client — same slug pattern as the page below
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -32,7 +33,42 @@ export default async function InvitationPage({ params }: { params: Promise<{ slu
   // so a pending/rejected submission simply won't resolve here even if someone guesses the slug.
   const { data: row } = await supabase.from("mandals").select("*").eq("slug", slug).single();
 
-  if (!row) notFound();
+  if (!row) {
+    // Not visible to the public client — could be a genuinely wrong slug, OR a real
+    // submission that just hasn't been paid/approved yet. Check via the admin client
+    // (bypasses RLS) so we can tell these two cases apart and show the right message.
+    const { data: pendingRow } = await supabaseAdmin
+      .from("mandals")
+      .select("slug, mandal_name, status, payment_status")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (!pendingRow) notFound(); // truly doesn't exist — real 404
+
+    const isPaidButUnapproved = pendingRow.payment_status === "paid" && pendingRow.status !== "approved";
+
+    return (
+      <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-amber-50">
+        <p className="text-4xl mb-3">⏳</p>
+        <h1 className="text-2xl font-bold text-amber-900">
+          {isPaidButUnapproved ? "मंजुरीची प्रतीक्षा आहे" : "Payment बाकी आहे"}
+        </h1>
+        {pendingRow.mandal_name && (
+          <p className="text-amber-700 mt-1 font-medium">{pendingRow.mandal_name}</p>
+        )}
+        <p className="text-amber-700 mt-2 max-w-sm">
+          {isPaidButUnapproved
+            ? "तुमचे payment झाले आहे. लवकरच तुमचे निमंत्रण live होईल — कृपया थोडा वेळ थांबा."
+            : "हे निमंत्रण अजून live नाही. Payment पूर्ण करताच लगेच live होईल."}
+        </p>
+        {!isPaidButUnapproved && (
+          <div className="mt-6">
+            <PaymentButton slug={slug} />
+          </div>
+        )}
+      </main>
+    );
+  }
 
   const client = {
     mandalName: row.mandal_name,
@@ -54,38 +90,14 @@ export default async function InvitationPage({ params }: { params: Promise<{ slu
 
   return (
     <main>
-      <ScrollReveal>  
-        <Hero mandalName={client.mandalName} inviteLine={client.inviteLine} />
-      </ScrollReveal>
-      
-      <ScrollReveal> 
+      <Hero mandalName={client.mandalName} inviteLine={client.inviteLine} />
       <InvitationCard mandalName={client.mandalName} message={client.inviteMessage} />
-      </ScrollReveal>
-      
-      <ScrollReveal> 
       <MurtiCarousel mandalName={client.mandalName} establishedYear={client.establishedYear} photos={client.murtiPhotos} />
-      </ScrollReveal>
-      
-
-<ScrollReveal> 
       <Timeline events={client.timelineEvents} />
-      </ScrollReveal>
-      
-
-      <ScrollReveal> 
       <Location mandalName={client.mandalName} address={client.address} contact={client.contact} mapEmbedUrl={client.mapEmbedUrl} mapsLink={client.mapsLink} />
-      </ScrollReveal>
-      
-      <ScrollReveal> 
       <Blessings />
-      </ScrollReveal> 
-
-      <ScrollReveal> 
       <Gallery photos={client.galleryPhotos} />
-      </ScrollReveal> 
-      <ScrollReveal> 
       <Footer mandalName={client.mandalName} contact={client.contact} address={client.address} instagramUrl={client.instagramUrl} />
-    </ScrollReveal> 
     </main>
   );
 }

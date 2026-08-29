@@ -6,6 +6,9 @@ import { supabase } from "@/lib/supabase-client";
 import { getUniqueSlug } from "@/lib/slug";
 import { uploadPhotos } from "@/lib/photo-upload";
 import { track } from "@vercel/analytics";
+import PreviewModal from "@/components/PreviewModal";
+import { InvitationData } from "@/components/InvitationPreview";
+
 
 type TimelineDraft = {
   id: string;
@@ -109,6 +112,7 @@ export default function SubmitForm() {
 
   const [events, setEvents] = useState<TimelineDraft[]>([]);
   const [gallery, setGallery] = useState<GalleryDraft[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const updateEvent = (
     id: string,
@@ -185,6 +189,36 @@ export default function SubmitForm() {
 
   const validateStep3 = () => gallery.length >= 1;
 
+  const buildFinalTimeline = () =>
+  events
+    .filter((e) => e.title.trim())
+    .map((e) => {
+      if (e.presetKey === "aarti") {
+        const parts: string[] = [];
+        if (e.morningTime) parts.push(`सकाळी ${e.morningTime}`);
+        if (e.eveningTime) parts.push(`सायंकाळी ${e.eveningTime}`);
+        return { title: e.title, summary: e.summary, time: parts.join(" व ") };
+      }
+      return { title: e.title, summary: e.summary, date: e.date, time: e.time };
+    });
+
+const buildPreviewData = (): InvitationData => ({
+  mandalName: mandalName || "तुमच्या मंडळाचे नाव",
+  inviteLine: "आपणास सस्नेह निमंत्रण!",
+  inviteMessage: inviteMessage || "तुमचा निमंत्रण संदेश इथे दिसेल",
+  establishedYear,
+  murtiPhotos: gallery.slice(0, 3).map((g) => g.preview),
+  timelineEvents: buildFinalTimeline(),
+  address,
+  contact,
+  mapEmbedUrl: mapsLink
+    ? `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed`
+    : `https://maps.google.com/maps?q=${encodeURIComponent(address || "India")}&output=embed`,
+  mapsLink: mapsLink || `https://maps.google.com/?q=${encodeURIComponent(address || "India")}`,
+  galleryPhotos: gallery.map((g) => ({ url: g.preview, caption: g.caption })),
+  instagramUrl: instagramUrl || undefined,
+});
+
   const handleSubmit = async () => {
     setError("");
 
@@ -218,17 +252,7 @@ export default function SubmitForm() {
       setProgress("Details save ho rahi hain...");
 
       // आरती के 2 times ko ek readable string mein combine karte hain, date nahi bhejte
-      const finalTimeline = events
-        .filter((e) => e.title.trim())
-        .map((e) => {
-          if (e.presetKey === "aarti") {
-            const parts: string[] = [];
-            if (e.morningTime) parts.push(`सकाळी ${e.morningTime}`);
-            if (e.eveningTime) parts.push(`सायंकाळी ${e.eveningTime}`);
-            return { title: e.title, summary: e.summary, time: parts.join(" व ") };
-          }
-          return { title: e.title, summary: e.summary, date: e.date, time: e.time };
-        });
+      const finalTimeline = buildFinalTimeline();
 
       const { error: insertError } = await supabase
         .from("mandals")
@@ -341,7 +365,7 @@ export default function SubmitForm() {
 
             <div className="mx-auto flex max-w-md items-center justify-center">
 
-              {[1, 2, 3].map((item, index) => (
+              {[1, 2, 3, 4].map((item, index) => (
                 <div
                   key={item}
                   className="flex flex-1 items-center"
@@ -365,15 +389,11 @@ export default function SubmitForm() {
                           : "text-white/40"
                       }`}
                     >
-                      {item === 1
-                        ? "माहिती"
-                        : item === 2
-                        ? "कार्यक्रम"
-                        : "फोटो"}
+                     {item === 1 ? "माहिती" : item === 2 ? "कार्यक्रम" : item === 3 ? "फोटो" : "पूर्वावलोकन"}
                     </span>
                   </div>
 
-                  {index < 2 && (
+                  {index < 3 && (
                     <div
                       className={`step-line ${
                         step > item
@@ -391,6 +411,32 @@ export default function SubmitForm() {
             </p>
           </div>
 
+{step < 4 && (mandalName || gallery.length > 0) && (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+      padding: "10px 14px",
+      borderRadius: 14,
+      border: "1px solid rgba(251,191,36,0.2)",
+      background: "rgba(0,0,0,0.15)",
+      marginBottom: 18,
+    }}
+  >
+    {gallery[0] ? (
+      <img src={gallery[0].preview} style={{ width: 40, height: 40, borderRadius: 10, objectFit: "cover" }} />
+    ) : (
+      <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(251,191,36,0.15)" }} />
+    )}
+    <div>
+      <p style={{ fontSize: 10, color: "rgba(253,230,138,0.6)", letterSpacing: 1 }}>PREVIEW</p>
+      <p style={{ fontSize: 13, color: "#fef3c7", fontWeight: 600 }}>
+        {mandalName || "तुमच्या मंडळाचे नाव इथे दिसेल"}
+      </p>
+    </div>
+  </div>
+)}
           {/* =================================================
               FORM PANEL
           ================================================== */}
@@ -855,23 +901,14 @@ export default function SubmitForm() {
                       onClick={() => setStep(2)}
                     />
 
-                    <button
-                      type="button"
-                      onClick={handleSubmit}
-                      disabled={
-                        submitting || !validateStep3()
-                      }
-                      className="submit-button"
-                    >
-                      {submitting ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <span className="button-spinner" />
-                          Submit होत आहे...
-                        </span>
-                      ) : (
-                        "निमंत्रण सबमिट करा →"
-                      )}
-                    </button>
+                  <button
+  type="button"
+  onClick={() => validateStep3() && setStep(4)}
+  disabled={!validateStep3()}
+  className="submit-button"
+>
+  पूर्वावलोकन पहा (Preview) →
+</button>
 
                   </div>
 
@@ -890,6 +927,46 @@ export default function SubmitForm() {
           </p>
 
         </div>
+        {step === 4 && (
+  <div className="form-panel text-center">
+    <div className="mb-5">
+      <h2 className="section-title">तुमचे निमंत्रण तयार आहे!</h2>
+      <p className="section-subtitle">
+        Submit करण्यापूर्वी संपूर्ण animated निमंत्रण बघा — जसे live जाईल अगदी तसेच.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      onClick={() => setPreviewOpen(true)}
+      className="next-button w-full"
+    >
+      👁 पूर्ण निमंत्रण पहा
+    </button>
+
+    <div className="mt-4 flex gap-3">
+      <BackButton onClick={() => setStep(3)} />
+    </div>
+
+    {error && <div className="status-error mt-4">{error}</div>}
+    {progress && (
+      <div className="status-progress mt-4">
+        <span className="loading-dot" />
+        {progress}
+      </div>
+    )}
+  </div>
+)}
+
+{previewOpen && (
+  <PreviewModal
+    data={buildPreviewData()}
+    onBack={() => setPreviewOpen(false)}
+    onConfirm={handleSubmit}
+    confirming={submitting}
+    confirmLabel={submitting ? "..." : "✓ पुष्टी करा, Submit करा"}
+  />
+)}
       </div>
 
       {/* =====================================================

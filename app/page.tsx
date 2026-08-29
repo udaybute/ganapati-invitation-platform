@@ -41,7 +41,7 @@ const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(
 )}`;
 
 const typingText =
-  "एक सुंदर, animated आणि share करण्यायोग्य Ganpati invitation website — फक्त ₹499 मध्ये.";
+  "आपल्या मंडळासाठी Premium Digital Invitation Website तयार करा आणि एका क्लिकमध्ये मित्र-परिवारासोबत Share करा — फक्त ₹499 मध्ये.";
 
 export default function HomePage() {
   const [displayText, setDisplayText] = useState("");
@@ -159,14 +159,9 @@ export default function HomePage() {
 
         <div className="mt-1 animate-fade-up sm:mt-2 md:-mt-1">
           <h1 className="font-display text-[2.15rem] font-bold leading-[1.12] tracking-tight text-[var(--color-gold-light)] sm:text-5xl md:text-6xl lg:text-7xl">
-            आपल्या मंडळाचे
+            यंदा गणपतीचे निमंत्रण असू द्या Digital!
             <br />
-            <span className="relative inline-block">
-              निमंत्रण
-              <span className="absolute -bottom-2 left-1/2 h-px w-20 -translate-x-1/2 bg-[var(--color-gold)]/70 sm:w-28" />
-            </span>
-            <br />
-            फक्त ₹499 मध्ये
+            
           </h1>
         </div>
 
@@ -185,19 +180,7 @@ export default function HomePage() {
             PRICE BADGE
         ================================================== */}
 
-        <div className="mt-5 animate-fade-up-delay-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--color-gold)]/30 bg-black/15 px-4 py-2 backdrop-blur-sm">
-            <span className="text-sm text-[var(--color-gold-light)]">
-              Premium Invitation
-            </span>
-
-            <span className="h-1 w-1 rounded-full bg-[var(--color-gold)]" />
-
-            <span className="text-sm font-bold text-[var(--color-gold-light)]">
-              ₹499 only
-            </span>
-          </div>
-        </div>
+        
 
         {/* =================================================
             CTA
@@ -213,7 +196,7 @@ export default function HomePage() {
 
             <span className="relative flex items-center gap-2">
               ✨
-              <span>निमंत्रण तयार करा</span>
+              <span>माझं Digital  निमंत्रण तयार करा</span>
               <span className="transition-transform duration-300 group-hover:translate-x-1">
                 →
               </span>
