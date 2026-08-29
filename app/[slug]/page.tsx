@@ -97,7 +97,7 @@ export default async function InvitationPage({ params }: { params: Promise<{ slu
       <Location mandalName={client.mandalName} address={client.address} contact={client.contact} mapEmbedUrl={client.mapEmbedUrl} mapsLink={client.mapsLink} />
       <Blessings />
       <Gallery photos={client.galleryPhotos} />
-      <Footer mandalName={client.mandalName} contact={client.contact} address={client.address} instagramUrl={client.instagramUrl} />
+      <Footer mandalName={client.mandalName} contact={client.contact} address={client.address} instagramUrl={client.instagramUrl} slug={slug} />
     </main>
   );
 }
