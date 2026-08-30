@@ -342,6 +342,22 @@ const CoconutBreak = forwardRef<CoconutBreakHandle, CoconutBreakProps>(
           )}
         </AnimatePresence>
 
+         {/* DEVOTIONAL MESSAGE */}
+        <AnimatePresence>
+          {showMessage && (
+            <motion.div
+              className="pointer-events-none absolute left-1/2 top-[50%] z-[80] w-max -translate-x-1/2 text-center"
+              initial={{ opacity: 0, y: 12, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <p className="text-sm font-semibold tracking-wide text-amber-900">
+                श्री गणेशाय नमः 🙏
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* DRAG PROGRESS */}
         <AnimatePresence>
           {!broken && isHolding && (
@@ -460,21 +476,7 @@ const CoconutBreak = forwardRef<CoconutBreakHandle, CoconutBreakProps>(
             ))}
         </AnimatePresence>
 
-        {/* DEVOTIONAL MESSAGE */}
-        <AnimatePresence>
-          {showMessage && (
-            <motion.div
-              className="pointer-events-none absolute left-1/2 top-[108%] z-[80] w-max -translate-x-1/2 text-center"
-              initial={{ opacity: 0, y: 12, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="text-sm font-semibold tracking-wide text-amber-900">
-                श्री गणेशाय नमः 🙏
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+       
       </div>
     );
   }
