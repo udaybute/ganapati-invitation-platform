@@ -177,21 +177,30 @@ export default function Hero({
       </AnimatePresence>
 
       {/* =====================================================
-          BACKGROUND - RESPONSIVE DESKTOP & MOBILE WEBP
-      ====================================================== */}
-      <picture>
-        <source
-          media="(min-width: 768px)"
-          srcSet="/images/backgrounds/hero-background-desktop.webp"
-        />
-        <Image
-          src="/images/backgrounds/hero-background-mobile.webp"
-          alt="Festive Background"
-          fill
-          priority
-          className="-z-10 object-cover"
-        />
-      </picture>
+    BACKGROUND - VIDEO ON MOBILE, IMAGE ON DESKTOP
+==================================================== */}
+
+{/* MOBILE — video background */}
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  preload="auto"
+  poster="/images/backgrounds/hero-background-mobile.webp"
+  className="absolute inset-0 -z-10 h-full w-full object-cover md:hidden"
+>
+  <source src="/video/bg-video-mobile.mp4" type="video/mp4" />
+</video>
+
+{/* DESKTOP — static image background (unchanged) */}
+<Image
+  src="/images/backgrounds/hero-background-desktop.webp"
+  alt="Festive Background"
+  fill
+  priority
+  className="-z-10 hidden object-cover md:block"
+/>
 
       {/* =====================================================
           TOP CORNER GARLANDS
@@ -250,7 +259,7 @@ export default function Hero({
       {/* =====================================================
           MAIN HERO CONTENT
       ====================================================== */}
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center mt-20 sm:mt-12 md:mt-28 lg:mt-36">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center mt-35 sm:mt-12 md:mt-28 lg:mt-36">
         
         {/* TEXT CONTAINER WITH ADAPTIVE MARATHI TYPOGRAPHY */}
         <div className="w-full px-3.5 sm:px-6">
@@ -258,11 +267,6 @@ export default function Hero({
           <p className="text-xs sm:text-sm font-semibold tracking-[0.2em] text-[#8a2b00] drop-shadow-sm">
             ॥ श्री गणेशाय नमः ॥
           </p>
-
-          {/* MANDAL NAME - MOBILE FIRST SCALING TO PREVENT AWKWARD BREAKS */}
-          <h1 className="mt-2 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.22] text-[#4a1005] tracking-normal break-words drop-shadow-sm">
-            {mandalName}
-          </h1>
 
           {/* DIVIDER */}
           <div className="mx-auto mt-2.5 sm:mt-3.5 h-[2.5px] w-14 sm:w-20 rounded-full bg-gradient-to-r from-transparent via-[#d97706] to-transparent" />
@@ -273,7 +277,7 @@ export default function Hero({
           </p>
 
           {/* STATIC AARTI TIMETABLE BADGE */}
-          <div className="mt-3.5 inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-500/30 bg-amber-950/10 px-3.5 py-1.5 backdrop-blur-md shadow-sm sm:gap-3 sm:px-5 sm:py-2">
+          <div className="mt-5 inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-500/30 bg-amber-950/10 px-3.5 py-1.5 backdrop-blur-md shadow-sm sm:gap-3 sm:px-5 sm:py-2">
             <span className="text-sm sm:text-base">🪔</span>
             <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-xs sm:text-sm font-semibold text-[#5c1d0a]">
               <span>दैनिक आरती:</span>
@@ -281,7 +285,12 @@ export default function Hero({
                 सकाळी ८:०० | संध्याकाळी ७:३०
               </span>
             </div>
+            
           </div>
+           {/* MANDAL NAME - MOBILE FIRST SCALING TO PREVENT AWKWARD BREAKS */}
+          <h1 className="mt-5 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.22] text-[#4a1005] tracking-normal break-words drop-shadow-sm">
+            {mandalName}
+          </h1>
         </div>
 
         {/* ===================================================
@@ -312,22 +321,14 @@ export default function Hero({
               ease: "easeInOut",
             }}
           >
-            <Image
-              src="/images/ganapati/ganapati-murti.png"
-              alt="Ganapati murti"
-              width={400}
-              height={480}
-              priority
-              sizes="(max-width: 639px) 230px, (max-width: 767px) 260px, (max-width: 1023px) 310px, 340px"
-              className="block h-auto w-full object-contain drop-shadow-[0_16px_22px_rgba(0,0,0,0.3)]"
-            />
+            
           </motion.div>
         </div>
 
         {/* ===================================================
             COCONUT BREAK
         ==================================================== */}
-        <div className="relative z-20 mt-1 flex flex-col items-center justify-center sm:mt-2 md:mt-3">
+        <div className="relative z-20 mt-120 flex flex-col items-center justify-center sm:mt-2 md:mt-3">
           <CoconutBreak
             size={105}
             upwardDistance={55}
