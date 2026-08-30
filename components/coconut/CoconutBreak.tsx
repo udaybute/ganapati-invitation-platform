@@ -412,47 +412,66 @@ const CoconutBreak = forwardRef<CoconutBreakHandle, CoconutBreakProps>(
           )}
         </AnimatePresence>
 
-        {/* LEFT COCONUT HALF */}
-        <AnimatePresence>
-          {broken && (
-            <motion.div
-              className="pointer-events-none absolute inset-0 z-20"
-              initial={{ x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }}
-              animate={{ x: -(size * 0.58), y: size * 0.72, rotate: -32, scale: 0.88, opacity: 1 }}
-              transition={{ duration: 1.15, ease: [0.22, 0.61, 0.36, 1] }}
-            >
-              <Image
-                src="/images/decorations/coconut-left.png"
-                alt=""
-                fill
-                sizes={`${size}px`}
-                draggable={false}
-                className="select-none object-contain drop-shadow-[0_18px_18px_rgba(60,30,10,0.2)]"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* LEFT COCONUT HALF
+            BUG FIX: previously only mounted into the DOM when `broken`
+            flipped true (inside AnimatePresence), with no `priority`.
+            That meant Next.js only started FETCHING the image at the
+            exact moment it needed to be visible mid-animation — so it
+            was either invisible during the fall or popped in late.
+            Fix: always render it (hidden via opacity when !broken) so
+            the browser fetches + decodes it on page load, long before
+            anyone breaks the coconut. `priority` also makes the initial
+            fetch eager instead of lazy. */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-20"
+          initial={false}
+          animate={
+            broken
+              ? { x: -(size * 0.58), y: size * 0.72, rotate: -32, scale: 0.88, opacity: 1 }
+              : { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0 }
+          }
+          transition={
+            broken
+              ? { duration: 1.15, ease: [0.22, 0.61, 0.36, 1] }
+              : { duration: 0 }
+          }
+        >
+          <Image
+            src="/images/decorations/coconut-left.png"
+            alt=""
+            fill
+            priority
+            sizes={`${size}px`}
+            draggable={false}
+            className="select-none object-contain drop-shadow-[0_18px_18px_rgba(60,30,10,0.2)]"
+          />
+        </motion.div>
 
-        {/* RIGHT COCONUT HALF */}
-        <AnimatePresence>
-          {broken && (
-            <motion.div
-              className="pointer-events-none absolute inset-0 z-20"
-              initial={{ x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 }}
-              animate={{ x: size * 0.58, y: size * 0.72, rotate: 32, scale: 0.88, opacity: 1 }}
-              transition={{ duration: 1.2, ease: [0.22, 0.61, 0.36, 1] }}
-            >
-              <Image
-                src="/images/decorations/coconut-right.png"
-                alt=""
-                fill
-                sizes={`${size}px`}
-                draggable={false}
-                className="select-none object-contain drop-shadow-[0_18px_18px_rgba(60,30,10,0.2)]"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* RIGHT COCONUT HALF — same fix as left half above. */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-20"
+          initial={false}
+          animate={
+            broken
+              ? { x: size * 0.58, y: size * 0.72, rotate: 32, scale: 0.88, opacity: 1 }
+              : { x: 0, y: 0, rotate: 0, scale: 1, opacity: 0 }
+          }
+          transition={
+            broken
+              ? { duration: 1.2, ease: [0.22, 0.61, 0.36, 1] }
+              : { duration: 0 }
+          }
+        >
+          <Image
+            src="/images/decorations/coconut-right.png"
+            alt=""
+            fill
+            priority
+            sizes={`${size}px`}
+            draggable={false}
+            className="select-none object-contain drop-shadow-[0_18px_18px_rgba(60,30,10,0.2)]"
+          />
+        </motion.div>
 
         {/* PARTICLES */}
         <AnimatePresence>

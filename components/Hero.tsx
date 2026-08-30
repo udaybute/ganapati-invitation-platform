@@ -1,9 +1,22 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import CoconutBreak from "./coconut/CoconutBreak";
+
+// Doors overlay uses Framer Motion's AnimatePresence, which measures
+// layout on mount via a layout effect. SSR-ing that subtree races
+// against hydration timing (worse on slow dev compiles) and can get
+// flagged as a hydration failure even though it's a legitimate
+// post-mount update. ssr:false removes the server render for this
+// subtree entirely, so there is nothing for React to reconcile
+// against on the client — no race, no mismatch. This is the
+// documented pattern for AnimatePresence + Next.js SSR.
+const DoorsOverlay = dynamic(() => import("./DoorsOverlay"), {
+  ssr: false,
+});
 
 type HeroProps = {
   mandalName: string;
@@ -60,147 +73,42 @@ export default function Hero({
   return (
     <section className="relative min-h-screen overflow-hidden">
       {/* =====================================================
-          INTRO DOORS - REALISTIC NATURAL SLOW SLIDE OPEN
+          INTRO DOORS
+          Client-only via next/dynamic ssr:false — see comment
+          on the import above. Do not put this back inline with
+          AnimatePresence rendered directly in this file; that
+          reintroduces the hydration mismatch.
       ====================================================== */}
-      <AnimatePresence>
-        {!doorsOpen && (
-          <div
-            className="fixed inset-0 z-50 cursor-pointer overflow-hidden bg-transparent"
-            onClick={handleOpenDoors}
-            role="button"
-            tabIndex={0}
-            aria-label="दार उघडण्यासाठी स्पर्श करा"
-          >
-            {/* =================================================
-                MOBILE DOORS (< md)
-            ================================================== */}
-            <div className="flex h-full w-full md:hidden">
-              {/* LEFT DOOR */}
-              <motion.div
-                className="relative h-full w-1/2 overflow-hidden shadow-[10px_0_35px_rgba(0,0,0,0.7)] z-10"
-                initial={{ x: 0 }}
-                exit={{
-                  x: "-102%",
-                }}
-                transition={{
-                  duration: 2.5,
-                  ease: [0.22, 1, 0.36, 1], // Gentle, realistic cinematic door slide
-                }}
-              >
-                <Image
-                  src="/images/doors/left-door.png"
-                  alt=""
-                  fill
-                  priority
-                  className="object-cover object-right select-none"
-                />
-              </motion.div>
-
-              {/* RIGHT DOOR */}
-              <motion.div
-                className="relative h-full w-1/2 overflow-hidden shadow-[-10px_0_35px_rgba(0,0,0,0.7)] z-10"
-                initial={{ x: 0 }}
-                exit={{
-                  x: "102%",
-                }}
-                transition={{
-                  duration: 2.5,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <Image
-                  src="/images/doors/right-door.png"
-                  alt=""
-                  fill
-                  priority
-                  className="object-cover object-left select-none"
-                />
-              </motion.div>
-            </div>
-
-            {/* =================================================
-                TABLET + DESKTOP DOORS (>= md)
-            ================================================== */}
-            <div className="hidden h-full w-full md:flex">
-              {/* LEFT DESKTOP DOOR */}
-              <motion.div
-                className="relative h-full w-1/2 overflow-hidden shadow-[15px_0_45px_rgba(0,0,0,0.75)] z-10"
-                initial={{ x: 0 }}
-                exit={{
-                  x: "-102%",
-                }}
-                transition={{
-                  duration: 2.7,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <Image
-                  src="/images/doors/desktop-left-door.png"
-                  alt=""
-                  fill
-                  priority
-                  sizes="50vw"
-                  className="object-cover object-right select-none"
-                />
-              </motion.div>
-
-              {/* RIGHT DESKTOP DOOR */}
-              <motion.div
-                className="relative h-full w-1/2 overflow-hidden shadow-[-15px_0_45px_rgba(0,0,0,0.75)] z-10"
-                initial={{ x: 0 }}
-                exit={{
-                  x: "102%",
-                }}
-                transition={{
-                  duration: 2.7,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <Image
-                  src="/images/doors/desktop-right-door.png"
-                  alt=""
-                  fill
-                  priority
-                  sizes="50vw"
-                  className="object-cover object-left select-none"
-                />
-              </motion.div>
-            </div>
-
-            {/* Center tap area without intrusive UI button */}
-            <div
-              className="absolute inset-0 z-30 cursor-pointer"
-              onClick={handleOpenDoors}
-            />
-          </div>
-        )}
-      </AnimatePresence>
+      <DoorsOverlay doorsOpen={doorsOpen} onOpen={handleOpenDoors} />
 
       {/* =====================================================
-    BACKGROUND - VIDEO ON MOBILE, IMAGE ON DESKTOP
-==================================================== */}
+          BACKGROUND - VIDEO ON MOBILE, IMAGE ON DESKTOP
+          preload="metadata": poster paints instantly, actual
+          video bytes stream in once playback starts, instead
+          of blocking on a full video download at page load.
+      ====================================================== */}
 
-{/* MOBILE — video background */}
-<video
-  autoPlay
-  muted
-  loop
-  playsInline
-  preload="auto"
-  poster="/images/backgrounds/hero-background-mobile.webp"
-  className="absolute inset-0 -z-10 h-full w-full object-cover md:hidden"
->
-  <source src="/video/bg-video-mobile.mp4" type="video/mp4" />
-</video>
+      {/* MOBILE — video background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster="/images/backgrounds/hero-background-mobile.webp"
+        className="absolute inset-0 -z-10 h-full w-full object-cover md:hidden"
+      >
+        <source src="/video/bg-video-mobile.mp4" type="video/mp4" />
+      </video>
 
-{/* DESKTOP — static image background (unchanged) */}
-<Image
-  src="/images/backgrounds/hero-background-desktop.webp"
-  alt="Festive Background"
-  fill
-  priority
-  className="-z-10 hidden object-cover md:block"
-/>
+      {/* DESKTOP — static image background (unchanged) */}
+      <Image
+        src="/images/backgrounds/hero-background-desktop.webp"
+        alt="Festive Background"
+        fill
+        priority
+        className="-z-10 hidden object-cover md:block"
+      />
 
       {/* =====================================================
           TOP CORNER GARLANDS
@@ -260,7 +168,7 @@ export default function Hero({
           MAIN HERO CONTENT
       ====================================================== */}
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center text-center mt-35 sm:mt-12 md:mt-28 lg:mt-36">
-        
+
         {/* TEXT CONTAINER WITH ADAPTIVE MARATHI TYPOGRAPHY */}
         <div className="w-full px-3.5 sm:px-6">
           {/* श्री गणेशाय नमः */}
@@ -285,7 +193,7 @@ export default function Hero({
                 सकाळी ८:०० | संध्याकाळी ७:३०
               </span>
             </div>
-            
+
           </div>
            {/* MANDAL NAME - MOBILE FIRST SCALING TO PREVENT AWKWARD BREAKS */}
           <h1 className="mt-5 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.22] text-[#4a1005] tracking-normal break-words drop-shadow-sm">
@@ -321,7 +229,7 @@ export default function Hero({
               ease: "easeInOut",
             }}
           >
-            
+
           </motion.div>
         </div>
 
@@ -365,6 +273,7 @@ export default function Hero({
       <audio
         ref={audioRef}
         src="/audio/bhajan.mp3"
+        preload="none"
         loop
       />
     </section>
