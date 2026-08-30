@@ -48,7 +48,7 @@ export default function MurtiCarousel({ mandalName, establishedYear, photos }: M
       {/* BACKGROUND */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/backgrounds/festival-background.webp"
+          src="/images/backgrounds/background3.webp"
           alt=""
           fill
           sizes="100vw"
