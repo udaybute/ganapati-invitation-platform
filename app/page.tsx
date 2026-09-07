@@ -7,7 +7,7 @@ import { track } from "@vercel/analytics";
 import { FestiveAudioAndBlessing } from "@/components/FestiveAudioAndBlessing";
 
 const invitationUrl =
-  "https://ganapati-invitation-platform.vercel.app/mandal-zw5m9l";
+  "https://ganapati-invitation-platform.vercel.app/mandal-13k04e";
 
 const platformUrl =
   "https://ganapati-invitation-platform.vercel.app/";
@@ -61,10 +61,10 @@ export default function HomePage() {
       <picture className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <source
           media="(min-width: 768px)"
-          srcSet="/images/backgrounds/hero-background3.webp"
+          srcSet="/images/backgrounds/background3.webp"
         />
         <Image
-          src="/images/backgrounds/hero-background3.webp"
+          src="/images/backgrounds/background3.webp"
           alt="Festive Background"
           fill
           priority
@@ -155,11 +155,14 @@ export default function HomePage() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("live_demo_click")}
-            className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl border border-[#e8a93b]/40 bg-black/30 px-6 py-4 text-sm sm:text-base font-semibold text-[#f3d089] backdrop-blur-sm transition-all duration-200 hover:bg-[#e8a93b]/10 active:scale-95"
+            className="group flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-2xl border border-emerald-400/30 bg-emerald-950/20 px-6 py-4 text-sm sm:text-base font-semibold text-[#f3d089] backdrop-blur-sm transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-950/30 active:scale-95"
           >
-            <span>👀</span>
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            </span>
             <span>Live Demo पहा</span>
-            <span>↗</span>
+            <span className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
           </a>
         </div>
 
