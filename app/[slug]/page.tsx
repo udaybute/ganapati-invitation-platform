@@ -49,24 +49,55 @@ export default async function InvitationPage({ params }: { params: Promise<{ slu
     const isPaidButUnapproved = pendingRow.payment_status === "paid" && pendingRow.status !== "approved";
 
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-amber-50">
-        <p className="text-4xl mb-3">⏳</p>
-        <h1 className="text-2xl font-bold text-amber-900">
-          {isPaidButUnapproved ? "मंजुरीची प्रतीक्षा आहे" : "Payment बाकी आहे"}
-        </h1>
-        {pendingRow.mandal_name && (
-          <p className="text-amber-700 mt-1 font-medium">{pendingRow.mandal_name}</p>
-        )}
-        <p className="text-amber-700 mt-2 max-w-sm">
-          {isPaidButUnapproved
-            ? "तुमचे payment झाले आहे. लवकरच तुमचे निमंत्रण live होईल — कृपया थोडा वेळ थांबा."
-            : "हे निमंत्रण अजून live नाही. Payment पूर्ण करताच लगेच live होईल."}
-        </p>
-        {!isPaidButUnapproved && (
-          <div className="mt-6">
-            <PaymentButton slug={slug} />
+      <main className="relative min-h-screen overflow-hidden bg-[#1c0609] text-[#fef9eb]">
+        {/* Ambient background glow, matches homepage brand system */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <div className="absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-[#e8a93b]/15 blur-[110px]" />
+          <div className="absolute bottom-0 right-0 h-[320px] w-[320px] translate-x-1/4 translate-y-1/4 rounded-full bg-emerald-500/10 blur-[100px]" />
+        </div>
+
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center">
+          {/* Status card */}
+          <div className="w-full max-w-md rounded-3xl border border-[#e8a93b]/25 bg-[#24080c]/70 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl sm:p-10">
+            <div
+              className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full border ${
+                isPaidButUnapproved
+                  ? "border-emerald-400/30 bg-emerald-950/30"
+                  : "border-[#e8a93b]/30 bg-[#e8a93b]/10"
+              }`}
+            >
+              <span className="text-3xl">{isPaidButUnapproved ? "✅" : "⏳"}</span>
+            </div>
+
+            <h1 className="font-display mt-5 text-2xl font-bold tracking-tight text-[#f3d089] sm:text-3xl">
+              {isPaidButUnapproved ? "मंजुरीची प्रतीक्षा आहे" : "Payment बाकी आहे"}
+            </h1>
+
+            {pendingRow.mandal_name && (
+              <p className="mt-2 text-sm font-semibold text-[#e8a93b]">{pendingRow.mandal_name}</p>
+            )}
+
+            <div className="mx-auto my-5 h-px w-16 bg-[#e8a93b]/25" />
+
+            <p className="mx-auto max-w-sm text-sm leading-relaxed text-[#fef9eb]/75 sm:text-base">
+              {isPaidButUnapproved
+                ? "तुमचे payment झाले आहे. लवकरच तुमचे निमंत्रण live होईल — कृपया थोडा वेळ थांबा."
+                : "हे निमंत्रण अजून live नाही. Payment पूर्ण करताच लगेच live होईल."}
+            </p>
+
+            {!isPaidButUnapproved && (
+              <div className="mt-7">
+                <PaymentButton slug={slug} />
+              </div>
+            )}
+
+            {isPaidButUnapproved && (
+              <p className="mt-6 text-xs text-[#fef9eb]/45">
+                खूप वेळ थांबावे लागल्यास आमच्याशी WhatsApp वर संपर्क साधा.
+              </p>
+            )}
           </div>
-        )}
+        </div>
       </main>
     );
   }

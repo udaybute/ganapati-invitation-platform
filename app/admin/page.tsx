@@ -179,7 +179,7 @@ export default async function AdminPage({
     .reduce((sum, m) => sum + (m.amount ?? 0), 0);
 
   const unpaidPendingCount = (pending ?? []).filter((m) => m.payment_status !== "paid").length;
-  const potentialRevenue = unpaidPendingCount * 499;
+  const potentialRevenue = unpaidPendingCount * 299;
 
   /*
   ============================================================

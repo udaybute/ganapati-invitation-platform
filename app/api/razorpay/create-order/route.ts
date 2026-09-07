@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   if (error || !mandal) return NextResponse.json({ error: "Mandal not found" }, { status: 404 });
   if (mandal.payment_status === "paid") return NextResponse.json({ error: "Already paid" }, { status: 400 });
 
-  const amountPaise = (mandal.amount ?? 499) * 100;
+  const amountPaise = (mandal.amount ?? 299) * 100;
 
   const order = await razorpay.orders.create({
     amount: amountPaise,

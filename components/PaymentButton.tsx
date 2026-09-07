@@ -20,7 +20,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function PaymentButton({ slug, amountLabel = "₹499" }: { slug: string; amountLabel?: string }) {
+export default function PaymentButton({ slug, amountLabel = "₹299" }: { slug: string; amountLabel?: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
